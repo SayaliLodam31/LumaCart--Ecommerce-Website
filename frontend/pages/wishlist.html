@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Wishlist | LumaCart</title>
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+
+    <div id="site-header-mount"></div>
+
+    <main class="container" style="padding: 2.5rem 1.5rem 5rem;">
+        <div style="margin-bottom: 2rem;">
+            <span class="section-badge">SAVED FOR LATER</span>
+            <h1 style="font-size: 2.2rem;">Your Wishlist</h1>
+        </div>
+
+        <div class="product-grid" id="wishlistGrid">
+            <div class="skeleton skeleton-card-img"></div>
+            <div class="skeleton skeleton-card-img"></div>
+        </div>
+    </main>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.authManager.isAuthenticated()) {
+                window.location.href = `/pages/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+                return;
+            }
+
+            await renderWishlist();
+
+            window.addEventListener('wishlist:updated', () => {
+                renderWishlist();
+            });
+        });
+
+        async function renderWishlist() {
+            const grid = document.getElementById('wishlistGrid');
+            const data = await window.wishlistManager.getWishlist();
+
+            if (!data || !data.items || data.items.length === 0) {
+                grid.innerHTML = `
+                    <div class="state-box" style="grid-column: 1/-1;">
+                        <div class="state-icon">♡</div>
+                        <h2 class="state-title">Your wishlist is empty</h2>
+                        <p class="state-description">Save pieces you love to revisit or purchase later.</p>
+                        <a href="/pages/products.html" class="btn btn-primary btn-sm">Explore Collection</a>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = data.items.map((it, idx) => window.renderProductCard(it.product, idx)).join('');
+        }
+    </script>
+</body>
+</html>

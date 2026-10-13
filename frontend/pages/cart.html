@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Bag | LumaCart</title>
+    <meta name="description" content="Review your selected luxury items, apply promo vouchers, and proceed to checkout at LumaCart.">
+
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+
+    <div id="site-header-mount"></div>
+
+    <main class="container">
+        <div style="padding: 2.5rem 0 1rem;">
+            <span class="section-badge">ORDER REVIEW</span>
+            <h1 style="font-size: 2.2rem;">Your Shopping Bag</h1>
+        </div>
+
+        <div id="cartContentWrapper">
+            <!-- Loading state -->
+            <div class="skeleton" style="height: 300px; border-radius: var(--border-radius-md);"></div>
+        </div>
+    </main>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await renderCartView();
+
+            // Re-render when cart updates
+            window.addEventListener('cart:updated', () => {
+                renderCartView();
+            });
+        });
+
+        async function renderCartView() {
+            const wrapper = document.getElementById('cartContentWrapper');
+            const cart = await window.cartManager.getCart();
+
+            if (!cart || !cart.items || cart.items.length === 0) {
+                wrapper.innerHTML = `
+                    <div class="state-box">
+                        <div class="state-icon">🛍</div>
+                        <h2 class="state-title">Your shopping bag is empty</h2>
+                        <p class="state-description">Discover our curated apparel, jewellery, and leather goods.</p>
+                        <a href="/pages/products.html" class="btn btn-primary">Explore Collections</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const freeShippingThreshold = 3000;
+            const subtotal = parseFloat(cart.subtotal);
+            const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+
+            wrapper.innerHTML = `
+                <div class="cart-page-layout">
+                    <!-- Left: Items Table -->
+                    <div>
+                        <!-- Free shipping progress bar banner -->
+                        <div style="background: var(--color-bg-subtle); border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 0.9rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.88rem;">
+                            ${remainingForFreeShipping === 0 
+                                ? '✨ <strong>Complimentary Express Shipping</strong> is applied to your order!' 
+                                : `Add <strong>${window.CONFIG.formatCurrency(remainingForFreeShipping)}</strong> more to unlock <strong>Free Express Shipping</strong>.`
+                            }
+                        </div>
+
+                        <div class="cart-table-wrapper" style="overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--border-radius-md);">
+                        <table class="cart-table">
+                            <thead>
+                                <tr>
+                                    <th>Item Details</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${cart.items.map(item => `
+                                    <tr>
+                                        <td>
+                                            <div class="cart-product-cell">
+                                                <a href="/pages/product-detail.html?slug=${item.product_slug}">
+                                                    <img src="${item.primary_image || '/assets/images/placeholder.svg'}" 
+                                                         alt="${item.product_title}" 
+                                                         class="cart-item-img"
+                                                         width="80"
+                                                         height="100"
+                                                         loading="lazy"
+                                                         decoding="async"
+                                                         onerror="this.onerror=null;this.src='/assets/images/placeholder.svg';">
+                                                </a>
+                                                <div>
+                                                    <h4 style="font-size: 0.95rem; margin-bottom: 0.25rem;">
+                                                        <a href="/pages/product-detail.html?slug=${item.product_slug}">${item.product_title}</a>
+                                                    </h4>
+                                                    <div style="font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.4;">
+                                                        ${item.variant_details.size_name ? `<span>Size: ${item.variant_details.size_name}</span> &bull; ` : ''}
+                                                        ${item.variant_details.colour_name ? `<span>Color: ${item.variant_details.colour_name}</span> &bull; ` : ''}
+                                                        <span>SKU: ${item.variant_details.sku}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="font-weight: 500;">${window.CONFIG.formatCurrency(item.unit_price)}</td>
+                                        <td>
+                                            <div class="quantity-control" style="height: 38px;">
+                                                <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity - 1})" aria-label="Decrease">&minus;</button>
+                                                <input type="text" class="qty-input" value="${item.quantity}" readonly>
+                                                <button class="qty-btn" onclick="updateQty(${item.id}, ${item.quantity + 1})" aria-label="Increase" ${item.quantity >= item.available_stock ? 'disabled' : ''}>+</button>
+                                            </div>
+                                        </td>
+                                        <td style="font-weight: 600;">${window.CONFIG.formatCurrency(item.subtotal)}</td>
+                                        <td>
+                                            <button onclick="removeCartItem(${item.id})" class="btn-ghost" style="color: var(--color-text-light); font-size: 1.2rem;" title="Remove item">
+                                                &times;
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Summary Card -->
+                    <aside class="order-summary-card">
+                        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Bag Summary</h3>
+
+                        <div class="summary-row">
+                            <span>Subtotal (${cart.total_items_count} items)</span>
+                            <span>${window.CONFIG.formatCurrency(cart.subtotal)}</span>
+                        </div>
+
+                        ${parseFloat(cart.discount_amount) > 0 ? `
+                            <div class="summary-row" style="color: var(--color-accent-terracotta);">
+                                <span>Coupon Discount (${cart.coupon ? cart.coupon.code : ''})</span>
+                                <span>-${window.CONFIG.formatCurrency(cart.discount_amount)}</span>
+                            </div>
+                        ` : ''}
+
+                        <div class="summary-row">
+                            <span>Standard Express Shipping</span>
+                            <span>${parseFloat(cart.shipping_charge) === 0 ? '<strong style="color: var(--color-success)">FREE</strong>' : window.CONFIG.formatCurrency(cart.shipping_charge)}</span>
+                        </div>
+
+                        <div class="summary-row">
+                            <span>Estimated GST (12%)</span>
+                            <span>${window.CONFIG.formatCurrency(cart.tax_amount)}</span>
+                        </div>
+
+                        <div class="summary-row total-row">
+                            <span>Estimated Total</span>
+                            <span>${window.CONFIG.formatCurrency(cart.total_amount)}</span>
+                        </div>
+
+                        <!-- Coupon Code Field -->
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color-subtle);">
+                            <label class="form-label">Promotional Voucher</label>
+                            ${cart.coupon ? `
+                                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--color-accent-sage-light); padding: 0.6rem 0.9rem; border-radius: var(--border-radius-sm);">
+                                    <span style="font-weight: 600; color: var(--color-accent-sage); font-size: 0.85rem;">🏷 ${cart.coupon.code}</span>
+                                    <button onclick="window.cartManager.removeCoupon()" class="btn-ghost btn-sm" style="color: var(--color-error); padding: 0;">Remove</button>
+                                </div>
+                            ` : `
+                                <div class="coupon-input-group">
+                                    <input type="text" id="couponCodeInput" class="form-control" placeholder="e.g. WELCOME10" style="text-transform: uppercase;">
+                                    <button onclick="applyCouponCode()" class="btn btn-secondary btn-sm">Apply</button>
+                                </div>
+                            `}
+                        </div>
+
+                        <a href="/pages/checkout.html" class="btn btn-primary btn-block btn-lg" style="margin-top: 2rem;">
+                            Proceed to Checkout &bull; ${window.CONFIG.formatCurrency(cart.total_amount)}
+                        </a>
+
+                        <div style="margin-top: 1.25rem; text-align: center;">
+                            <a href="/pages/products.html" class="auth-link" style="font-size: 0.85rem;">&larr; Continue Exploring</a>
+                        </div>
+                    </aside>
+                </div>
+            `;
+        }
+
+        window.updateQty = async function(itemId, qty) {
+            await window.cartManager.updateQuantity(itemId, qty);
+        };
+
+        window.removeCartItem = async function(itemId) {
+            await window.cartManager.removeItem(itemId);
+        };
+
+        window.applyCouponCode = async function() {
+            const code = document.getElementById('couponCodeInput').value.trim();
+            if (!code) {
+                window.Toast.warning('Please enter a coupon code.');
+                return;
+            }
+            await window.cartManager.applyCoupon(code);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | LumaCart</title>
+    <meta name="description" content="Register an account with LumaCart to save your favorite apparel, track deliveries, and unlock complimentary concierge support.">
+
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+    <div class="auth-page-wrapper">
+        <div class="auth-split-container">
+            <!-- Left: Fashion Editorial Showcase -->
+            <div class="auth-visual-panel">
+                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600&auto=format&fit=crop" 
+                     alt="LumaCart Fashion Collection" 
+                     class="auth-visual-bg"
+                     onerror="this.onerror=null;this.src='/media/products/39716.jpg';">
+                <div class="auth-visual-overlay"></div>
+
+                <div class="auth-visual-content">
+                    <a href="/index.html" class="auth-visual-brand">
+                        LumaCart<span class="brand-dot"></span>
+                    </a>
+                </div>
+
+                <div class="auth-visual-tagline">
+                    <p class="auth-visual-quote">
+                        “Timeless minimalism meeting thoughtful craftsmanship.”
+                    </p>
+                    <div class="auth-pills-row">
+                        <span class="auth-category-pill">💎 Fine Jewellery</span>
+                        <span class="auth-category-pill">👢 Sculpted Footwear</span>
+                        <span class="auth-category-pill">🧣 Mulberry Silk</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: White Registration Form -->
+            <div class="auth-form-panel">
+                <div class="auth-header">
+                    <h1>Create Account</h1>
+                    <p>Join LumaCart for personalized curation and seamless shopping.</p>
+                </div>
+
+                <form id="registerForm" class="auth-form" novalidate>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label" for="regFirstName">First Name *</label>
+                            <input type="text" id="regFirstName" class="form-control" placeholder="e.g. Sophia" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regLastName">Last Name</label>
+                            <input type="text" id="regLastName" class="form-control" placeholder="e.g. Kapoor">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="regEmail">Email Address *</label>
+                        <input type="email" id="regEmail" class="form-control" placeholder="sophia@example.com" required autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="regPhone">Phone Number (Optional)</label>
+                        <input type="tel" id="regPhone" class="form-control" placeholder="+91 98765 43210">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="regPassword">Password * (min 8 chars)</label>
+                        <div class="password-field-wrapper">
+                            <input type="password" id="regPassword" class="form-control" placeholder="Create strong password" required minlength="8" autocomplete="new-password">
+                            <button type="button" class="password-toggle-btn" id="toggleRegPasswordBtn" aria-label="Toggle password visibility">Show</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="regPasswordConfirm">Confirm Password *</label>
+                        <input type="password" id="regPasswordConfirm" class="form-control" placeholder="Re-enter password" required minlength="8">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerSubmitBtn" style="margin-top: 1rem;">
+                        Create My Account
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <span>Already have an account? </span>
+                    <a href="/pages/login.html">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/auth.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('registerForm');
+            const submitBtn = document.getElementById('registerSubmitBtn');
+            const toggleBtn = document.getElementById('toggleRegPasswordBtn');
+            const passInput = document.getElementById('regPassword');
+
+            toggleBtn.addEventListener('click', () => {
+                const isPass = passInput.type === 'password';
+                passInput.type = isPass ? 'text' : 'password';
+                toggleBtn.textContent = isPass ? 'Hide' : 'Show';
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const firstName = document.getElementById('regFirstName').value.trim();
+                const lastName = document.getElementById('regLastName').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const phone = document.getElementById('regPhone').value.trim();
+                const password = passInput.value;
+                const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+
+                if (!firstName || !email || !password || !passwordConfirm) {
+                    window.Toast.warning('Please fill in all required fields.');
+                    return;
+                }
+
+                if (password.length < 8) {
+                    window.Toast.warning('Password must be at least 8 characters long.');
+                    return;
+                }
+
+                if (password !== passwordConfirm) {
+                    window.Toast.error('Passwords do not match.');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating account...';
+
+                try {
+                    await window.authManager.register({
+                        first_name: firstName,
+                        last_name: lastName,
+                        email: email,
+                        phone_number: phone,
+                        password: password,
+                        password_confirm: passwordConfirm
+                    });
+
+                    window.Toast.success('Account created successfully! Welcome to LumaCart.');
+                    setTimeout(() => {
+                        window.location.href = '/index.html';
+                    }, 800);
+                } catch (err) {
+                    window.Toast.error(err.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create My Account';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

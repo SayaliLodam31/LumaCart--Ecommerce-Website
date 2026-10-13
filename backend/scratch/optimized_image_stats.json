@@ -1,0 +1,732 @@
+{
+  "total_size_before": 549024,
+  "total_size_after": 575388,
+  "files": [
+    {
+      "id": 2288,
+      "filename": "2288.jpg",
+      "size_before_bytes": 12753,
+      "size_before_kb": 12.45,
+      "size_after_bytes": 12777,
+      "size_after_kb": 12.48,
+      "reduction_bytes": -24,
+      "reduction_percent": -0.19,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 2886,
+      "filename": "2886.jpg",
+      "size_before_bytes": 15385,
+      "size_before_kb": 15.02,
+      "size_after_bytes": 16819,
+      "size_after_kb": 16.42,
+      "reduction_bytes": -1434,
+      "reduction_percent": -9.32,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 3168,
+      "filename": "3168.jpg",
+      "size_before_bytes": 14897,
+      "size_before_kb": 14.55,
+      "size_after_bytes": 14995,
+      "size_after_kb": 14.64,
+      "reduction_bytes": -98,
+      "reduction_percent": -0.66,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 7990,
+      "filename": "7990.jpg",
+      "size_before_bytes": 18621,
+      "size_before_kb": 18.18,
+      "size_after_bytes": 20680,
+      "size_after_kb": 20.2,
+      "reduction_bytes": -2059,
+      "reduction_percent": -11.06,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 9036,
+      "filename": "9036.jpg",
+      "size_before_bytes": 11875,
+      "size_before_kb": 11.6,
+      "size_after_bytes": 11232,
+      "size_after_kb": 10.97,
+      "reduction_bytes": 643,
+      "reduction_percent": 5.41,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 9204,
+      "filename": "9204.jpg",
+      "size_before_bytes": 11667,
+      "size_before_kb": 11.39,
+      "size_after_bytes": 11108,
+      "size_after_kb": 10.85,
+      "reduction_bytes": 559,
+      "reduction_percent": 4.79,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 12732,
+      "filename": "12732.jpg",
+      "size_before_bytes": 16483,
+      "size_before_kb": 16.1,
+      "size_after_bytes": 16684,
+      "size_after_kb": 16.29,
+      "reduction_bytes": -201,
+      "reduction_percent": -1.22,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 13089,
+      "filename": "13089.jpg",
+      "size_before_bytes": 17757,
+      "size_before_kb": 17.34,
+      "size_after_bytes": 19358,
+      "size_after_kb": 18.9,
+      "reduction_bytes": -1601,
+      "reduction_percent": -9.02,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 15970,
+      "filename": "15970.jpg",
+      "size_before_bytes": 32720,
+      "size_before_kb": 31.95,
+      "size_after_bytes": 35683,
+      "size_after_kb": 34.85,
+      "reduction_bytes": -2963,
+      "reduction_percent": -9.06,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 16957,
+      "filename": "16957.jpg",
+      "size_before_bytes": 7526,
+      "size_before_kb": 7.35,
+      "size_after_bytes": 6573,
+      "size_after_kb": 6.42,
+      "reduction_bytes": 953,
+      "reduction_percent": 12.66,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 17429,
+      "filename": "17429.jpg",
+      "size_before_bytes": 24033,
+      "size_before_kb": 23.47,
+      "size_after_bytes": 25465,
+      "size_after_kb": 24.87,
+      "reduction_bytes": -1432,
+      "reduction_percent": -5.96,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 18839,
+      "filename": "18839.jpg",
+      "size_before_bytes": 9406,
+      "size_before_kb": 9.19,
+      "size_after_bytes": 8552,
+      "size_after_kb": 8.35,
+      "reduction_bytes": 854,
+      "reduction_percent": 9.08,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 20099,
+      "filename": "20099.jpg",
+      "size_before_bytes": 15781,
+      "size_before_kb": 15.41,
+      "size_after_bytes": 17800,
+      "size_after_kb": 17.38,
+      "reduction_bytes": -2019,
+      "reduction_percent": -12.79,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 20851,
+      "filename": "20851.jpg",
+      "size_before_bytes": 12182,
+      "size_before_kb": 11.9,
+      "size_after_bytes": 12585,
+      "size_after_kb": 12.29,
+      "reduction_bytes": -403,
+      "reduction_percent": -3.31,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 25947,
+      "filename": "25947.jpg",
+      "size_before_bytes": 19178,
+      "size_before_kb": 18.73,
+      "size_after_bytes": 21002,
+      "size_after_kb": 20.51,
+      "reduction_bytes": -1824,
+      "reduction_percent": -9.51,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 26960,
+      "filename": "26960.jpg",
+      "size_before_bytes": 16225,
+      "size_before_kb": 15.84,
+      "size_after_bytes": 18084,
+      "size_after_kb": 17.66,
+      "reduction_bytes": -1859,
+      "reduction_percent": -11.46,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 26994,
+      "filename": "26994.jpg",
+      "size_before_bytes": 11708,
+      "size_before_kb": 11.43,
+      "size_after_bytes": 12720,
+      "size_after_kb": 12.42,
+      "reduction_bytes": -1012,
+      "reduction_percent": -8.64,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 30805,
+      "filename": "30805.jpg",
+      "size_before_bytes": 21352,
+      "size_before_kb": 20.85,
+      "size_after_bytes": 23412,
+      "size_after_kb": 22.86,
+      "reduction_bytes": -2060,
+      "reduction_percent": -9.65,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 35322,
+      "filename": "35322.jpg",
+      "size_before_bytes": 6291,
+      "size_before_kb": 6.14,
+      "size_after_bytes": 5437,
+      "size_after_kb": 5.31,
+      "reduction_bytes": 854,
+      "reduction_percent": 13.57,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 39386,
+      "filename": "39386.jpg",
+      "size_before_bytes": 17972,
+      "size_before_kb": 17.55,
+      "size_after_bytes": 19873,
+      "size_after_kb": 19.41,
+      "reduction_bytes": -1901,
+      "reduction_percent": -10.58,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 39524,
+      "filename": "39524.jpg",
+      "size_before_bytes": 14206,
+      "size_before_kb": 13.87,
+      "size_after_bytes": 14930,
+      "size_after_kb": 14.58,
+      "reduction_bytes": -724,
+      "reduction_percent": -5.1,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 39716,
+      "filename": "39716.jpg",
+      "size_before_bytes": 14260,
+      "size_before_kb": 13.93,
+      "size_after_bytes": 16125,
+      "size_after_kb": 15.75,
+      "reduction_bytes": -1865,
+      "reduction_percent": -13.08,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 39988,
+      "filename": "39988.jpg",
+      "size_before_bytes": 12716,
+      "size_before_kb": 12.42,
+      "size_after_bytes": 12921,
+      "size_after_kb": 12.62,
+      "reduction_bytes": -205,
+      "reduction_percent": -1.61,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 47359,
+      "filename": "47359.jpg",
+      "size_before_bytes": 15446,
+      "size_before_kb": 15.08,
+      "size_after_bytes": 16882,
+      "size_after_kb": 16.49,
+      "reduction_bytes": -1436,
+      "reduction_percent": -9.3,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 47957,
+      "filename": "47957.jpg",
+      "size_before_bytes": 21159,
+      "size_before_kb": 20.66,
+      "size_after_bytes": 21654,
+      "size_after_kb": 21.15,
+      "reduction_bytes": -495,
+      "reduction_percent": -2.34,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 48123,
+      "filename": "48123.jpg",
+      "size_before_bytes": 13967,
+      "size_before_kb": 13.64,
+      "size_after_bytes": 13308,
+      "size_after_kb": 13.0,
+      "reduction_bytes": 659,
+      "reduction_percent": 4.72,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 48311,
+      "filename": "48311.jpg",
+      "size_before_bytes": 20209,
+      "size_before_kb": 19.74,
+      "size_after_bytes": 22355,
+      "size_after_kb": 21.83,
+      "reduction_bytes": -2146,
+      "reduction_percent": -10.62,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 48781,
+      "filename": "48781.jpg",
+      "size_before_bytes": 8314,
+      "size_before_kb": 8.12,
+      "size_after_bytes": 7451,
+      "size_after_kb": 7.28,
+      "reduction_bytes": 863,
+      "reduction_percent": 10.38,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 49005,
+      "filename": "49005.jpg",
+      "size_before_bytes": 6704,
+      "size_before_kb": 6.55,
+      "size_after_bytes": 5745,
+      "size_after_kb": 5.61,
+      "reduction_bytes": 959,
+      "reduction_percent": 14.3,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 49653,
+      "filename": "49653.jpg",
+      "size_before_bytes": 16345,
+      "size_before_kb": 15.96,
+      "size_after_bytes": 18530,
+      "size_after_kb": 18.1,
+      "reduction_bytes": -2185,
+      "reduction_percent": -13.37,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 52224,
+      "filename": "52224.jpg",
+      "size_before_bytes": 29334,
+      "size_before_kb": 28.65,
+      "size_after_bytes": 30948,
+      "size_after_kb": 30.22,
+      "reduction_bytes": -1614,
+      "reduction_percent": -5.5,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 53759,
+      "filename": "53759.jpg",
+      "size_before_bytes": 19422,
+      "size_before_kb": 18.97,
+      "size_after_bytes": 21533,
+      "size_after_kb": 21.03,
+      "reduction_bytes": -2111,
+      "reduction_percent": -10.87,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 56214,
+      "filename": "56214.jpg",
+      "size_before_bytes": 6288,
+      "size_before_kb": 6.14,
+      "size_after_bytes": 5649,
+      "size_after_kb": 5.52,
+      "reduction_bytes": 639,
+      "reduction_percent": 10.16,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 58183,
+      "filename": "58183.jpg",
+      "size_before_bytes": 10299,
+      "size_before_kb": 10.06,
+      "size_after_bytes": 10623,
+      "size_after_kb": 10.37,
+      "reduction_bytes": -324,
+      "reduction_percent": -3.15,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 59051,
+      "filename": "59051.jpg",
+      "size_before_bytes": 14254,
+      "size_before_kb": 13.92,
+      "size_after_bytes": 13943,
+      "size_after_kb": 13.62,
+      "reduction_bytes": 311,
+      "reduction_percent": 2.18,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    },
+    {
+      "id": 59263,
+      "filename": "59263.jpg",
+      "size_before_bytes": 12289,
+      "size_before_kb": 12.0,
+      "size_after_bytes": 11952,
+      "size_after_kb": 11.67,
+      "reduction_bytes": 337,
+      "reduction_percent": 2.74,
+      "dims_before": [
+        384,
+        512
+      ],
+      "dims_after": [
+        384,
+        512
+      ],
+      "progressive_before": false,
+      "progressive_after": 1
+    }
+  ],
+  "avg_size_before": 15250.67,
+  "avg_size_after": 15983.0,
+  "total_kb_before": 536.16,
+  "total_kb_after": 561.9,
+  "total_saved_bytes": -26364,
+  "total_saved_percent": -4.8
+}

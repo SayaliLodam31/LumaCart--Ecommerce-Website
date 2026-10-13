@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .bg { fill: #FAF9F6; stroke: #E8E4DC; }
+      .letter { fill: #1F1F1F; }
+      .dot { fill: #8A9A86; }
+      @media (prefers-color-scheme: dark) {
+        .bg { fill: #1A1A1A; stroke: #333333; }
+        .letter { fill: #FAF9F6; }
+        .dot { fill: #9EB09A; }
+      }
+    </style>
+  </defs>
+  <!-- Minimal Luxury Squircle Base -->
+  <rect class="bg" x="2" y="2" width="60" height="60" rx="14" stroke-width="2.5"/>
+  <!-- High Fashion Serif Letter 'L' Monogram -->
+  <path class="letter" d="M 16.5 16 L 27 16 C 26 18 25.4 20 25.4 22 L 25.4 43.5 C 25.4 44.5 25.8 45 27 45.2 L 37.5 45.2 C 40 45.2 41.5 44 42 41 L 43.5 41 L 43 48 L 15.5 48 L 15.5 46.5 C 18 46.2 18.8 45.5 18.8 43.5 L 18.8 20.5 C 18.8 18.5 18 17.8 15.5 17.5 Z"/>
+  <!-- Signature Sage Green Brand Dot -->
+  <circle class="dot" cx="47" cy="44.5" r="4.5"/>
+</svg>

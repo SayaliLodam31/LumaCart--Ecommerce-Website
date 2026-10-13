@@ -1,0 +1,66 @@
+/**
+ * LumaCart Design System - Minimal Luxury Fashion Theme
+ * Warm white / ivory base with soft beige, muted sage, dusty rose, and dark charcoal text.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+    /* Color Palette - Minimal Warm Fashion Aesthetic */
+    --color-bg-base: #FAF9F6;       /* Warm Ivory base */
+    --color-bg-surface: #FFFFFF;    /* Pure White for cards/panels */
+    --color-bg-subtle: #F4F1EA;     /* Soft Linen tint */
+    --color-bg-beige: #EFEBE4;      /* Soft Warm Beige */
+    --color-bg-muted: #E8E4DC;      /* Muted sand border/divider */
+
+    /* Typography Colors - High readability, zero harsh pure black */
+    --color-text-main: #1F1F1F;     /* Deep charcoal for primary headings/text */
+    --color-text-secondary: #4A4A4A;/* Neutral medium charcoal */
+    --color-text-muted: #7A7875;    /* Muted caption text */
+    --color-text-light: #9B9894;    /* Light hint text */
+
+    /* Accent & Brand Colors */
+    --color-accent-sage: #8A9A86;   /* Muted Sage */
+    --color-accent-sage-light: #EBF0EA;
+    --color-accent-rose: #D8A49B;   /* Dusty Rose */
+    --color-accent-rose-light: #F9EFEF;
+    --color-accent-blue: #7C93A4;   /* Muted Blue */
+    --color-accent-terracotta: #C27357;
+
+    /* Semantic Feedback Colors */
+    --color-success: #52796F;
+    --color-success-bg: #EDF4F2;
+    --color-error: #B85042;
+    --color-error-bg: #FDF2F0;
+    --color-warning: #C98A2C;
+    --color-warning-bg: #FDF8ED;
+    --color-info: #5B7B88;
+    --color-info-bg: #EFF5F8;
+
+    /* Border & Divider */
+    --border-color: #E8E4DC;
+    --border-color-subtle: #F0EDE6;
+    --border-radius-xs: 4px;
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --border-radius-pill: 9999px;
+
+    /* Elevation & Shadows */
+    --shadow-subtle: 0 2px 8px rgba(31, 31, 31, 0.03);
+    --shadow-card: 0 4px 16px rgba(31, 31, 31, 0.05);
+    --shadow-hover: 0 8px 24px rgba(31, 31, 31, 0.08);
+    --shadow-modal: 0 16px 40px rgba(31, 31, 31, 0.12);
+
+    /* Typography */
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Layout Constraints */
+    --max-width-site: 1320px;
+    --header-height: 80px;
+}

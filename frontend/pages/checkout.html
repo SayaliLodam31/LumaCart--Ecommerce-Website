@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Checkout | LumaCart</title>
+    <meta name="description" content="Complete your purchase with Razorpay SSL encryption at LumaCart.">
+
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+
+    <!-- Razorpay Standard Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+    <div id="site-header-mount"></div>
+
+    <main class="container" style="padding-bottom: 5rem;">
+        <div style="padding: 2rem 0 1rem;">
+            <span class="section-badge">SECURE 256-BIT ENCRYPTED CHECKOUT</span>
+            <h1 style="font-size: 2rem;">Shipping & Payment</h1>
+        </div>
+
+        <div class="cart-page-layout" id="checkoutPageLayout">
+            <!-- Left: Checkout Steps Accordion / Cards -->
+            <div class="checkout-steps-column">
+                <!-- Step 1: Shipping Address -->
+                <div class="checkout-card" id="stepAddressCard">
+                    <div class="checkout-card-header">
+                        <span class="step-number">1</span>
+                        <h2 style="font-size: 1.25rem;">Delivery Address</h2>
+                    </div>
+
+                    <div id="addressSelectionContainer">
+                        <!-- Populated with saved addresses -->
+                        <div class="skeleton skeleton-title"></div>
+                    </div>
+
+                    <button id="showNewAddressFormBtn" class="btn btn-outline btn-sm" style="margin-top: 1rem;">
+                        + Add New Delivery Address
+                    </button>
+
+                    <!-- New Address Form (hidden by default) -->
+                    <form id="newAddressForm" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color-subtle);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" id="addrFullName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number *</label>
+                                <input type="tel" id="addrPhone" class="form-control" placeholder="+91 9876543210" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Street Address / House No. *</label>
+                            <input type="text" id="addrStreet" class="form-control" placeholder="Flat, building, street, area" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Landmark (Optional)</label>
+                            <input type="text" id="addrLandmark" class="form-control" placeholder="Near park, metro, or landmark">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">City *</label>
+                                <input type="text" id="addrCity" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">State *</label>
+                                <input type="text" id="addrState" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">PIN Code *</label>
+                                <input type="text" id="addrPostalCode" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                            <button type="submit" class="btn btn-primary btn-sm" id="saveAddressBtn">Save & Select Address</button>
+                            <button type="button" class="btn btn-ghost btn-sm" id="cancelAddressBtn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 2: Delivery Method -->
+                <div class="checkout-card">
+                    <div class="checkout-card-header">
+                        <span class="step-number">2</span>
+                        <h2 style="font-size: 1.25rem;">Delivery Method</h2>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="shippingMethodsContainer">
+                        <label class="delivery-method-option address-card-radio selected" id="methodPrepaidLabel" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <input type="radio" name="shippingMethod" id="shippingPrepaid" value="Standard Express (2-4 business days)" checked>
+                                <div>
+                                    <strong style="font-size: 0.92rem;">Standard Express Delivery (Online Payment)</strong>
+                                    <p style="font-size: 0.8rem; color: var(--color-text-muted);">Fast, safe courier delivery via Razorpay (UPI, Cards, Net Banking)</p>
+                                </div>
+                            </div>
+                            <span style="font-weight: 600; font-size: 0.9rem;" id="shippingMethodFee">Free</span>
+                        </label>
+
+                        <label class="delivery-method-option address-card-radio" id="methodCodLabel" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <input type="radio" name="shippingMethod" id="shippingCod" value="Cash on Delivery">
+                                <div>
+                                    <strong style="font-size: 0.92rem;">Cash on Delivery (COD)</strong>
+                                    <p style="font-size: 0.8rem; color: var(--color-text-muted);">Pay with cash or scan UPI QR code upon arrival at your doorstep</p>
+                                </div>
+                            </div>
+                            <span style="font-weight: 600; font-size: 0.9rem;">Free</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Step 3: Payment Provider -->
+                <div class="checkout-card">
+                    <div class="checkout-card-header">
+                        <span class="step-number">3</span>
+                        <h2 style="font-size: 1.25rem;">Payment Provider</h2>
+                    </div>
+
+                    <div id="paymentBoxOnline" style="background: var(--color-bg-subtle); border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <strong style="font-size: 0.95rem;">Razorpay Secure Gateway</strong>
+                            <span class="badge badge-sage">Verified</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5;">
+                            Supports all major UPI apps (GPay, PhonePe, Paytm), RuPay, Visa, Mastercard, and Net Banking across 50+ Indian banks.
+                        </p>
+                    </div>
+
+                    <div id="paymentBoxCod" style="display: none; background: var(--color-bg-subtle); border-radius: var(--border-radius-sm); padding: 1.25rem; border: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                            <strong style="font-size: 0.95rem;">💵 Cash on Delivery (Pay on Doorstep)</strong>
+                            <span class="badge badge-sage">No Advance Payment</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5;">
+                            Please keep exact cash ready or scan the delivery executive's UPI QR code when your package is handed over at your doorstep.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary Review -->
+            <aside class="order-summary-card" id="checkoutSummaryCard">
+                <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Order Review</h3>
+                <div id="checkoutItemsList" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 240px; overflow-y: auto; margin-bottom: 1.5rem; padding-right: 0.5rem;">
+                    <!-- Items snippet -->
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="chkSubtotal">₹0</span>
+                </div>
+                <div class="summary-row" id="chkDiscountRow" style="display: none; color: var(--color-accent-terracotta);">
+                    <span>Discount</span>
+                    <span id="chkDiscount">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span id="chkShipping">FREE</span>
+                </div>
+                <div class="summary-row">
+                    <span>GST (12%)</span>
+                    <span id="chkTax">₹0</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Amount Payable</span>
+                    <span id="chkTotal">₹0</span>
+                </div>
+
+                <button id="payNowBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 2rem;">
+                    Authorize Payment &bull; <span id="payBtnAmount">₹0</span>
+                </button>
+
+                <p style="font-size: 0.75rem; color: var(--color-text-muted); text-align: center; margin-top: 1rem;">
+                    🔒 By placing this order, you agree to LumaCart's Terms of Sale and Privacy Policy.
+                </p>
+            </aside>
+        </div>
+    </main>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        let selectedAddressId = null;
+        let currentCart = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Require authentication for checkout
+            if (!window.authManager.isAuthenticated()) {
+                window.Toast.info('Please sign in or create an account to proceed with checkout.');
+                setTimeout(() => {
+                    window.location.href = `/pages/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+                }, 1000);
+                return;
+            }
+
+            await loadCheckoutData();
+            setupAddressForm();
+            setupShippingMethodHandler();
+            setupPaymentHandler();
+        });
+
+        async function loadCheckoutData() {
+            // 1. Fetch Cart
+            currentCart = await window.cartManager.getCart();
+            if (!currentCart || !currentCart.items || currentCart.items.length === 0) {
+                window.location.href = '/pages/cart.html';
+                return;
+            }
+
+            // Render summary items
+            document.getElementById('checkoutItemsList').innerHTML = currentCart.items.map(item => `
+                <div style="display: flex; gap: 0.75rem; align-items: center; font-size: 0.85rem;">
+                    <img src="${item.primary_image || '/assets/images/placeholder.svg'}" 
+                         alt="${item.product_title}" 
+                         width="44" 
+                         height="55" 
+                         loading="lazy" 
+                         decoding="async" 
+                         onerror="this.onerror=null;this.src='/assets/images/placeholder.svg';" 
+                         style="width: 44px; height: 55px; object-fit: cover; border-radius: 4px; aspect-ratio: 4 / 5;">
+                    <div style="flex: 1; overflow: hidden;">
+                        <p style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.product_title}</p>
+                        <p style="color: var(--color-text-muted); font-size: 0.78rem;">Qty: ${item.quantity} &bull; ${item.variant_details.size_name || ''}</p>
+                    </div>
+                    <span style="font-weight: 600;">${window.CONFIG.formatCurrency(item.subtotal)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('chkSubtotal').textContent = window.CONFIG.formatCurrency(currentCart.subtotal);
+            if (parseFloat(currentCart.discount_amount) > 0) {
+                document.getElementById('chkDiscountRow').style.display = 'flex';
+                document.getElementById('chkDiscount').textContent = `-${window.CONFIG.formatCurrency(currentCart.discount_amount)}`;
+            }
+            document.getElementById('chkShipping').textContent = parseFloat(currentCart.shipping_charge) === 0 ? 'FREE' : window.CONFIG.formatCurrency(currentCart.shipping_charge);
+            document.getElementById('shippingMethodFee').textContent = document.getElementById('chkShipping').textContent;
+            document.getElementById('chkTax').textContent = window.CONFIG.formatCurrency(currentCart.tax_amount);
+            document.getElementById('chkTotal').textContent = window.CONFIG.formatCurrency(currentCart.total_amount);
+            document.getElementById('payBtnAmount').textContent = window.CONFIG.formatCurrency(currentCart.total_amount);
+
+            // 2. Fetch User Addresses
+            await loadAddresses();
+        }
+
+        async function loadAddresses() {
+            const container = document.getElementById('addressSelectionContainer');
+            try {
+                const res = await window.apiClient.get('/addresses/');
+                if (res.ok) {
+                    const addresses = await res.json();
+                    const list = addresses.results || addresses;
+
+                    if (list.length === 0) {
+                        container.innerHTML = '<p style="color: var(--color-text-muted); font-size: 0.9rem;">No saved address found. Please enter your delivery address below.</p>';
+                        document.getElementById('newAddressForm').style.display = 'block';
+                        document.getElementById('showNewAddressFormBtn').style.display = 'none';
+                        return;
+                    }
+
+                    // Default or first address is selected
+                    const defaultAddr = list.find(a => a.is_default) || list[0];
+                    selectedAddressId = defaultAddr.id;
+
+                    container.innerHTML = `
+                        <div class="address-selection-grid">
+                            ${list.map(a => `
+                                <div class="address-card-radio ${a.id === selectedAddressId ? 'selected' : ''}" 
+                                     onclick="selectAddress(${a.id}, this)">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
+                                        <strong>${a.full_name}</strong>
+                                        ${a.is_default ? '<span class="badge badge-sage">Default</span>' : ''}
+                                    </div>
+                                    <p style="font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.4;">
+                                        ${a.street_address}, ${a.landmark ? a.landmark + ', ' : ''}${a.city}, ${a.state} - ${a.postal_code}
+                                    </p>
+                                    <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.4rem;">
+                                        📞 ${a.phone_number}
+                                    </p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.selectAddress = function(id, el) {
+            selectedAddressId = id;
+            document.querySelectorAll('#addressSelectionContainer .address-card-radio').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+        };
+
+        function setupShippingMethodHandler() {
+            const prepaidRadio = document.getElementById('shippingPrepaid');
+            const codRadio = document.getElementById('shippingCod');
+            const prepaidLabel = document.getElementById('methodPrepaidLabel');
+            const codLabel = document.getElementById('methodCodLabel');
+            const payBoxOnline = document.getElementById('paymentBoxOnline');
+            const payBoxCod = document.getElementById('paymentBoxCod');
+            const payBtn = document.getElementById('payNowBtn');
+
+            function updateMethodUI() {
+                const isCod = codRadio && codRadio.checked;
+                if (isCod) {
+                    if (prepaidLabel) prepaidLabel.classList.remove('selected');
+                    if (codLabel) codLabel.classList.add('selected');
+                    if (payBoxOnline) payBoxOnline.style.display = 'none';
+                    if (payBoxCod) payBoxCod.style.display = 'block';
+                    if (payBtn && currentCart) {
+                        payBtn.innerHTML = `Place Order (Cash on Delivery) &bull; ${window.CONFIG.formatCurrency(currentCart.total_amount)}`;
+                    }
+                } else {
+                    if (codLabel) codLabel.classList.remove('selected');
+                    if (prepaidLabel) prepaidLabel.classList.add('selected');
+                    if (payBoxOnline) payBoxOnline.style.display = 'block';
+                    if (payBoxCod) payBoxCod.style.display = 'none';
+                    if (payBtn && currentCart) {
+                        payBtn.innerHTML = `Authorize Payment &bull; ${window.CONFIG.formatCurrency(currentCart.total_amount)}`;
+                    }
+                }
+            }
+
+            if (prepaidRadio) prepaidRadio.addEventListener('change', updateMethodUI);
+            if (codRadio) codRadio.addEventListener('change', updateMethodUI);
+        }
+
+        function setupAddressForm() {
+            const form = document.getElementById('newAddressForm');
+            const showBtn = document.getElementById('showNewAddressFormBtn');
+            const cancelBtn = document.getElementById('cancelAddressBtn');
+
+            showBtn.addEventListener('click', () => {
+                form.style.display = 'block';
+                showBtn.style.display = 'none';
+            });
+
+            cancelBtn.addEventListener('click', () => {
+                form.style.display = 'none';
+                showBtn.style.display = 'inline-flex';
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const saveBtn = document.getElementById('saveAddressBtn');
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+
+                const addrData = {
+                    full_name: document.getElementById('addrFullName').value.trim(),
+                    phone_number: document.getElementById('addrPhone').value.trim(),
+                    street_address: document.getElementById('addrStreet').value.trim(),
+                    landmark: document.getElementById('addrLandmark').value.trim(),
+                    city: document.getElementById('addrCity').value.trim(),
+                    state: document.getElementById('addrState').value.trim(),
+                    postal_code: document.getElementById('addrPostalCode').value.trim(),
+                    country: 'India',
+                    is_default: true
+                };
+
+                try {
+                    const res = await window.apiClient.post('/addresses/', addrData);
+                    const data = await ApiClient.parseResponse(res);
+
+                    if (res.ok) {
+                        window.Toast.success('Address saved successfully!');
+                        form.reset();
+                        form.style.display = 'none';
+                        showBtn.style.display = 'inline-flex';
+                        await loadAddresses();
+                        selectedAddressId = data.id;
+                    } else {
+                        window.Toast.error(data.error || 'Failed to save address.');
+                    }
+                } catch (err) {
+                    window.Toast.error('Network error saving address.');
+                } finally {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save & Select Address';
+                }
+            });
+        }
+
+        function setupPaymentHandler() {
+            const payBtn = document.getElementById('payNowBtn');
+
+            function resetPayBtn() {
+                const isCod = document.getElementById('shippingCod')?.checked;
+                if (isCod) {
+                    payBtn.innerHTML = `Place Order (Cash on Delivery) &bull; ${window.CONFIG.formatCurrency(currentCart.total_amount)}`;
+                } else {
+                    payBtn.innerHTML = `Authorize Payment &bull; ${window.CONFIG.formatCurrency(currentCart.total_amount)}`;
+                }
+            }
+
+            payBtn.addEventListener('click', async () => {
+                if (!selectedAddressId) {
+                    window.Toast.warning('Please select or add a delivery address.');
+                    return;
+                }
+
+                const isCod = document.getElementById('shippingCod')?.checked;
+                const shippingMethod = isCod ? 'Cash on Delivery' : 'Standard Express (2-4 business days)';
+                const paymentMethod = isCod ? 'cod' : 'razorpay';
+
+                payBtn.disabled = true;
+                payBtn.textContent = isCod ? 'Placing Cash on Delivery Order...' : 'Initializing Razorpay Order...';
+
+                try {
+                    // 1. Validate checkout & stock on backend
+                    const valRes = await window.apiClient.post('/checkout/validate/');
+                    const valData = await ApiClient.parseResponse(valRes);
+
+                    if (!valRes.ok) {
+                        window.Toast.error(valData.error || 'Checkout validation failed.');
+                        payBtn.disabled = false;
+                        resetPayBtn();
+                        return;
+                    }
+
+                    // 2. Create Order on server
+                    const orderRes = await window.apiClient.post('/orders/create/', {
+                        address_id: selectedAddressId,
+                        shipping_method: shippingMethod,
+                        payment_method: paymentMethod
+                    });
+                    const orderData = await ApiClient.parseResponse(orderRes);
+
+                    if (!orderRes.ok) {
+                        window.Toast.error(orderData.error || 'Order creation failed.');
+                        payBtn.disabled = false;
+                        resetPayBtn();
+                        return;
+                    }
+
+                    // 3. Handle Cash on Delivery
+                    if (isCod || orderData.cod) {
+                        window.Toast.success('Cash on Delivery order confirmed! Redirecting...');
+                        setTimeout(() => {
+                            window.location.href = `/pages/order-confirmation.html?order_number=${orderData.order_number}`;
+                        }, 800);
+                        return;
+                    }
+
+                    // 4. Launch Razorpay Standard Checkout for Prepaid Orders
+                    const options = {
+                        key: orderData.razorpay_key_id || window.CONFIG.DEFAULT_RAZORPAY_KEY,
+                        amount: orderData.amount_in_paise,
+                        currency: orderData.currency || 'INR',
+                        name: 'LumaCart Fashion',
+                        description: `Payment for Order #${orderData.order_number}`,
+                        order_id: orderData.razorpay_order_id,
+                        prefill: {
+                            name: orderData.user_details.name,
+                            email: orderData.user_details.email,
+                            contact: orderData.user_details.phone
+                        },
+                        theme: {
+                            color: '#1F1F1F'
+                        },
+                        handler: async function (response) {
+                            // Server-Side HMAC Signature Verification
+                            payBtn.textContent = 'Verifying Payment on Server...';
+
+                            try {
+                                const verifyRes = await window.apiClient.post('/payments/verify/', {
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature
+                                });
+                                const verifyData = await ApiClient.parseResponse(verifyRes);
+
+                                if (verifyRes.ok) {
+                                    window.Toast.success('Payment verified! Redirecting to confirmation...');
+                                    setTimeout(() => {
+                                        window.location.href = `/pages/order-confirmation.html?order_number=${orderData.order_number}`;
+                                    }, 1000);
+                                } else {
+                                    window.Toast.error(verifyData.error || 'Payment signature verification failed.');
+                                    payBtn.disabled = false;
+                                    payBtn.textContent = 'Retry Payment';
+                                }
+                            } catch (e) {
+                                window.Toast.error('Network error during verification.');
+                                payBtn.disabled = false;
+                                resetPayBtn();
+                            }
+                        },
+                        modal: {
+                            ondismiss: function () {
+                                window.Toast.info('Payment was cancelled or dismissed. You can retry when ready.');
+                                payBtn.disabled = false;
+                                resetPayBtn();
+                            }
+                        }
+                    };
+
+                    const rzp = new Razorpay(options);
+                    rzp.on('payment.failed', function (response) {
+                        window.Toast.error(`Payment failed: ${response.error.description || 'Transaction declined'}`);
+                        payBtn.disabled = false;
+                        resetPayBtn();
+                    });
+                    rzp.open();
+
+                } catch (e) {
+                    console.error('Checkout error:', e);
+                    window.Toast.error('An unexpected error occurred during checkout initiation.');
+                    payBtn.disabled = false;
+                    resetPayBtn();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

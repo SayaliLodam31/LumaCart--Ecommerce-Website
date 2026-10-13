@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | LumaCart</title>
+    <meta name="description" content="Sign in to your LumaCart account to manage your orders, saved wishlist, and addresses.">
+
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+    <div class="auth-page-wrapper">
+        <div class="auth-split-container">
+            <!-- Left: Fashion Showcase Side Panel (Clothes, Jewellery, Shoes, Bags, Accessories) -->
+            <div class="auth-visual-panel">
+                <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600&auto=format&fit=crop" 
+                     alt="LumaCart Fashion Collection" 
+                     class="auth-visual-bg"
+                     onerror="this.onerror=null;this.src='/media/products/39716.jpg';">
+                <div class="auth-visual-overlay"></div>
+
+                <div class="auth-visual-content">
+                    <a href="/index.html" class="auth-visual-brand">
+                        LumaCart<span class="brand-dot"></span>
+                    </a>
+                </div>
+
+                <div class="auth-visual-tagline">
+                    <p class="auth-visual-quote">
+                        “Elegance is not about being noticed, it's about being remembered.”
+                    </p>
+                    <div class="auth-pills-row">
+                        <span class="auth-category-pill">👗 Pure Linen & Silk</span>
+                        <span class="auth-category-pill">✨ 18K Gold Vermeil</span>
+                        <span class="auth-category-pill">👠 Italian Leather Shoes</span>
+                        <span class="auth-category-pill">👜 Sculptural Bags</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: White Form Panel -->
+            <div class="auth-form-panel">
+                <div class="auth-header">
+                    <h1>Welcome Back</h1>
+                    <p>Enter your details to access your curated wardrobe.</p>
+                </div>
+
+                <form id="loginForm" class="auth-form" novalidate>
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="name@domain.com" required autocomplete="email">
+                        <div class="form-error" id="emailError" style="display: none;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            <label for="loginPassword" class="form-label" style="margin-bottom: 0;">Password</label>
+                            <a href="/pages/forgot-password.html" class="auth-link" style="font-size: 0.8rem;">Forgot password?</a>
+                        </div>
+                        <div class="password-field-wrapper">
+                            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                            <button type="button" class="password-toggle-btn" id="togglePasswordBtn" aria-label="Toggle password visibility">Show</button>
+                        </div>
+                        <div class="form-error" id="passwordError" style="display: none;"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="loginSubmitBtn" style="margin-top: 1rem;">
+                        Sign In
+                    </button>
+                </form>
+
+                <!-- Demo quick fill badge helper -->
+                <div style="margin-top: 1.5rem; background: var(--color-bg-subtle); padding: 0.85rem; border-radius: var(--border-radius-sm); font-size: 0.8rem; color: var(--color-text-secondary); text-align: center;">
+                    <span>Demo Account:</span>
+                    <button type="button" id="fillDemoCustomerBtn" class="btn btn-ghost btn-sm" style="font-size: 0.8rem; text-decoration: underline; padding: 0.1rem 0.4rem;">
+                        customer@lumacart.com
+                    </button>
+                    &bull;
+                    <button type="button" id="fillDemoAdminBtn" class="btn btn-ghost btn-sm" style="font-size: 0.8rem; text-decoration: underline; padding: 0.1rem 0.4rem;">
+                        admin@lumacart.com
+                    </button>
+                </div>
+
+                <div class="auth-footer">
+                    <span>Don't have an account? </span>
+                    <a href="/pages/register.html">Create an Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/auth.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+            const toggleBtn = document.getElementById('togglePasswordBtn');
+            const passInput = document.getElementById('loginPassword');
+
+            // Password visibility toggle
+            toggleBtn.addEventListener('click', () => {
+                const isPass = passInput.type === 'password';
+                passInput.type = isPass ? 'text' : 'password';
+                toggleBtn.textContent = isPass ? 'Hide' : 'Show';
+            });
+
+            // Demo auto-fill helpers
+            document.getElementById('fillDemoCustomerBtn').addEventListener('click', () => {
+                document.getElementById('loginEmail').value = 'customer@lumacart.com';
+                document.getElementById('loginPassword').value = 'Customer@12345';
+            });
+
+            document.getElementById('fillDemoAdminBtn').addEventListener('click', () => {
+                document.getElementById('loginEmail').value = 'admin@lumacart.com';
+                document.getElementById('loginPassword').value = 'Admin@12345';
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = passInput.value;
+
+                if (!email || !password) {
+                    window.Toast.warning('Please enter both email and password.');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Verifying credentials...';
+
+                try {
+                    await window.authManager.login(email, password);
+                    window.Toast.success('Welcome back! Login successful.');
+
+                    const params = new URLSearchParams(window.location.search);
+                    const redirect = params.get('redirect') || '/index.html';
+                    setTimeout(() => {
+                        window.location.href = redirect;
+                    }, 800);
+                } catch (err) {
+                    window.Toast.error(err.message);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Sign In';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

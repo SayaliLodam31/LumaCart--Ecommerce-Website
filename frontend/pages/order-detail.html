@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | LumaCart</title>
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+
+    <div id="site-header-mount"></div>
+
+    <main class="container container-narrow" style="padding: 2.5rem 1.5rem 5rem;">
+        <nav style="margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--color-text-muted);">
+            <a href="/pages/orders.html">&larr; Back to All Orders</a>
+        </nav>
+
+        <div id="orderDetailContent">
+            <div class="skeleton" style="height: 380px; border-radius: var(--border-radius-md);"></div>
+        </div>
+    </main>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        let currentOrderNum = '';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            currentOrderNum = params.get('order_number');
+
+            if (!currentOrderNum) {
+                window.location.href = '/pages/orders.html';
+                return;
+            }
+
+            await loadOrderDetail();
+
+            // Realtime WebSocket update
+            window.addEventListener('order:updated', (e) => {
+                if (e.detail && e.detail.order_number === currentOrderNum) {
+                    loadOrderDetail();
+                }
+            });
+        });
+
+        async function loadOrderDetail() {
+            const container = document.getElementById('orderDetailContent');
+            try {
+                const res = await window.apiClient.get(`/orders/${currentOrderNum}/`);
+                if (!res.ok) {
+                    container.innerHTML = '<div class="state-box"><p>Order could not be loaded.</p></div>';
+                    return;
+                }
+
+                const order = await res.json();
+                renderOrder(order);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderOrder(order) {
+            const container = document.getElementById('orderDetailContent');
+            const addr = order.shipping_address_json || {};
+
+            const steps = ['confirmed', 'processing', 'shipped', 'delivered'];
+            const stepLabels = ['Confirmed', 'Processing', 'Shipped', 'Delivered'];
+            const currentIdx = steps.indexOf(order.status);
+
+            const isCancellable = order.status === 'confirmed' || order.status === 'pending_payment';
+
+            container.innerHTML = `
+                <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 2rem; margin-bottom: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h1 style="font-size: 1.6rem; margin-bottom: 0.25rem;">Order #${order.order_number}</h1>
+                            <p style="font-size: 0.82rem; color: var(--color-text-muted);">Placed on ${order.created_at_formatted}</p>
+                        </div>
+                        <span class="badge badge-sage" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                            ${order.status_display}
+                        </span>
+                    </div>
+
+                    <!-- Progress Step Indicator -->
+                    ${currentIdx !== -1 ? `
+                        <div style="margin: 2.5rem 0 2rem; padding: 0 1rem;">
+                            <div style="display: flex; justify-content: space-between; position: relative;">
+                                <div style="position: absolute; top: 14px; left: 20px; right: 20px; height: 3px; background: var(--border-color); z-index: 1;">
+                                    <div style="height: 100%; background: var(--color-accent-sage); width: ${(currentIdx / (steps.length - 1)) * 100}%; transition: width 0.5s ease;"></div>
+                                </div>
+                                ${stepLabels.map((lbl, i) => `
+                                    <div style="position: relative; z-index: 2; text-align: center;">
+                                        <div style="width: 30px; height: 30px; border-radius: 50%; background: ${i <= currentIdx ? 'var(--color-accent-sage)' : '#FFFFFF'}; color: ${i <= currentIdx ? '#FFFFFF' : 'var(--color-text-light)'}; border: 2px solid ${i <= currentIdx ? 'var(--color-accent-sage)' : 'var(--border-color)'}; margin: 0 auto 0.4rem; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;">
+                                            ${i < currentIdx ? '✓' : (i + 1)}
+                                        </div>
+                                        <span style="font-size: 0.78rem; font-weight: ${i === currentIdx ? '600' : '400'}; color: ${i <= currentIdx ? 'var(--color-text-main)' : 'var(--color-text-light)'};">${lbl}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${order.tracking_number ? `
+                        <div style="background: var(--color-bg-subtle); padding: 0.85rem 1.25rem; border-radius: var(--border-radius-sm); font-size: 0.85rem; margin-top: 1.5rem;">
+                            <strong>Carrier Tracking:</strong> ${order.tracking_number} (${order.shipping_method})
+                        </div>
+                    ` : ''}
+                </div>
+
+                <!-- Items & Delivery Details -->
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <!-- Items -->
+                    <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 1.5rem;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Purchased Items</h3>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            ${order.items.map(it => `
+                                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color-subtle);">
+                                    <div>
+                                        <p style="font-weight: 600;">${it.product_title}</p>
+                                        <p style="font-size: 0.78rem; color: var(--color-text-muted);">${it.variant_name} &bull; Qty: ${it.quantity}</p>
+                                    </div>
+                                    <span style="font-weight: 600;">${window.CONFIG.formatCurrency(it.subtotal)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div style="margin-top: 1rem; padding-top: 0.5rem; font-size: 0.95rem; font-weight: 700; display: flex; justify-content: space-between;">
+                            <span>${order.payment?.payment_method === 'cod' ? 'Payable on Delivery:' : 'Total Paid:'}</span>
+                            <span>${window.CONFIG.formatCurrency(order.total_amount)}</span>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 1.5rem;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Shipping & Payment</h3>
+                        <p style="font-weight: 600; margin-bottom: 0.25rem;">${addr.full_name || ''}</p>
+                        <p style="font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5;">
+                            ${addr.street_address || ''}, ${addr.landmark ? addr.landmark + ', ' : ''}${addr.city || ''}, ${addr.state || ''} - ${addr.postal_code || ''}
+                        </p>
+                        <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.5rem;">📞 ${addr.phone_number || ''}</p>
+                        <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.35rem;">🚚 Delivery: <strong>${order.shipping_method || 'Standard Express'}</strong></p>
+                        <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.2rem;">💳 Payment: <strong>${order.payment?.payment_method === 'cod' ? 'Cash on Delivery' : 'Online Prepayment'}</strong></p>
+                    </div>
+                </div>
+
+                <!-- Cancel Order Action (if eligible) -->
+                ${isCancellable ? `
+                    <div style="text-align: right; margin-top: 1rem;">
+                        <button onclick="cancelOrder('${order.order_number}')" class="btn btn-outline btn-sm" style="color: var(--color-error); border-color: var(--color-error);">
+                            Cancel This Order
+                        </button>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        window.cancelOrder = async function(orderNum) {
+            if (!confirm(`Are you sure you wish to cancel order #${orderNum}? Your inventory reservation will be released.`)) return;
+
+            try {
+                const res = await window.apiClient.post(`/orders/${orderNum}/cancel/`);
+                const data = await ApiClient.parseResponse(res);
+
+                if (res.ok) {
+                    window.Toast.info(data.message || 'Order cancelled.');
+                    loadOrderDetail();
+                } else {
+                    window.Toast.error(data.error || 'Failed to cancel order.');
+                }
+            } catch (e) {
+                window.Toast.error('Network error.');
+            }
+        };
+    </script>
+</body>
+</html>

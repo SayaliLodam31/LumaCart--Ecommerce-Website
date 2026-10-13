@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumaCart | Modern Minimalist Luxury Fashion</title>
+    <meta name="description" content="Discover refined fashion, fine jewellery, handcrafted footwear, and artisanal leather goods curated with modern minimalist elegance at LumaCart.">
+    
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS Design System -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+
+    <!-- Header mount point -->
+    <div id="site-header-mount"></div>
+
+    <main id="mainContent">
+        <!-- Hero Dynamic Banner Section -->
+        <section class="hero-section container" id="heroSection">
+            <div class="hero-banner-card" id="heroCard">
+                <div class="hero-content">
+                    <span class="hero-badge" id="heroBadge">ATELIER COLLECTION</span>
+                    <h1 class="hero-title" id="heroTitle">LumaCart</h1>
+                    <p class="hero-subtitle" id="heroSubtitle">Your Shopping Platform</p>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                        <a href="/pages/products.html" class="btn btn-primary btn-lg" id="heroBtn">Shop Now &rarr;</a>
+                        <a href="/pages/products.html?new_arrival=true" class="btn btn-outline btn-lg">Explore New In</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600&auto=format&fit=crop" 
+                         alt="LumaCart Fashion Editorial" 
+                         class="hero-img" 
+                         id="heroImg"
+                         fetchpriority="high"
+                         onerror="this.onerror=null;this.src='/media/products/39716.jpg';" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Showcase Section -->
+        <section class="category-showcase-section container">
+            <div class="section-header">
+                <span class="section-badge">CURATED EDITIONS</span>
+                <h2 class="section-title">Shop by Category</h2>
+                <p class="section-subtitle">Effortless essentials crafted with uncompromising attention to detail.</p>
+            </div>
+
+            <div class="category-showcase-grid" id="categoryGrid">
+                <!-- Populated via API -->
+                <a href="/pages/products.html?category=womens-clothing" class="category-card">
+                    <div class="category-card-icon">👗</div>
+                    <span class="category-card-title">Women's Clothing</span>
+                </a>
+                <a href="/pages/products.html?category=mens-clothing" class="category-card">
+                    <div class="category-card-icon">👔</div>
+                    <span class="category-card-title">Men's Clothing</span>
+                </a>
+                <a href="/pages/products.html?category=shoes" class="category-card">
+                    <div class="category-card-icon">👠</div>
+                    <span class="category-card-title">Shoes</span>
+                </a>
+                <a href="/pages/products.html?category=bags" class="category-card">
+                    <div class="category-card-icon">👜</div>
+                    <span class="category-card-title">Bags</span>
+                </a>
+                <a href="/pages/products.html?category=jewellery" class="category-card">
+                    <div class="category-card-icon">💎</div>
+                    <span class="category-card-title">Jewellery</span>
+                </a>
+                <a href="/pages/products.html?category=accessories" class="category-card">
+                    <div class="category-card-icon">✨</div>
+                    <span class="category-card-title">Accessories</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Featured Products Section -->
+        <section class="container" style="margin-top: 4.5rem;">
+            <div class="section-header">
+                <span class="section-badge">FEATURED ATELIER</span>
+                <h2 class="section-title">Signature Highlights</h2>
+                <p class="section-subtitle">Pieces defined by architectural cuts and tactile luxury.</p>
+            </div>
+
+            <!-- Dynamic Product Grid loaded from PostgreSQL -->
+            <div class="product-grid" id="featuredGrid">
+                <!-- Skeleton Loaders -->
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+            </div>
+        </section>
+
+        <!-- Brand Values / Pillars -->
+        <section class="pillars-section">
+            <div class="container">
+                <div class="pillars-grid">
+                    <div class="pillar-item">
+                        <span class="pillar-icon">🌿</span>
+                        <div class="pillar-text">
+                            <h4>Ethical Sourcing</h4>
+                            <p>Pure organic fibers and certified recycled sterling silver.</p>
+                        </div>
+                    </div>
+                    <div class="pillar-item">
+                        <span class="pillar-icon">🧵</span>
+                        <div class="pillar-text">
+                            <h4>Artisanal Craft</h4>
+                            <p>Hand-finished garments and Goodyear-welted footwear.</p>
+                        </div>
+                    </div>
+                    <div class="pillar-item">
+                        <span class="pillar-icon">📦</span>
+                        <div class="pillar-text">
+                            <h4>Complimentary Shipping</h4>
+                            <p>Free express delivery on all orders over ₹3,000.</p>
+                        </div>
+                    </div>
+                    <div class="pillar-item">
+                        <span class="pillar-icon">🔄</span>
+                        <div class="pillar-text">
+                            <h4>Seamless Returns</h4>
+                            <p>14-day hassle-free doorstep returns and exchanges.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Arrivals Section -->
+        <section class="container" style="margin-bottom: 5rem;">
+            <div class="section-header">
+                <span class="section-badge">NEW IN THIS WEEK</span>
+                <h2 class="section-title">New Arrivals</h2>
+                <p class="section-subtitle">Fresh additions designed for modern elegance.</p>
+            </div>
+
+            <div class="product-grid" id="newArrivalsGrid">
+                <!-- Dynamic cards from API -->
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Mount Point -->
+    <div id="site-footer-mount"></div>
+
+    <!-- Mobile Nav Mount Point -->
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <!-- Home Page Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            loadHomeBanner();
+            loadFeaturedProducts();
+            loadNewArrivals();
+        });
+
+        async function loadHomeBanner() {
+            try {
+                const res = await window.apiClient.get('/banners/');
+                if (res.ok) {
+                    const banners = await res.json();
+                    const banner = banners.results && banners.results.length ? banners.results[0] : (banners[0] || null);
+                    if (banner) {
+                        if (banner.badge_text) document.getElementById('heroBadge').textContent = banner.badge_text;
+                        if (banner.title) document.getElementById('heroTitle').textContent = banner.title;
+                        if (banner.subtitle) document.getElementById('heroSubtitle').textContent = banner.subtitle;
+                        if (banner.button_text) document.getElementById('heroBtn').textContent = banner.button_text;
+                        if (banner.link_url) document.getElementById('heroBtn').href = banner.link_url;
+                        if (banner.image_url) document.getElementById('heroImg').src = banner.image_url;
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load banner:', e);
+            }
+        }
+
+        async function loadFeaturedProducts() {
+            const grid = document.getElementById('featuredGrid');
+            try {
+                const res = await window.apiClient.get('/products/featured/');
+                if (res.ok) {
+                    const products = await res.json();
+                    const list = products.results || products;
+                    if (list.length === 0) {
+                        grid.innerHTML = '<div class="state-box" style="grid-column: 1/-1;"><p>No featured products found.</p></div>';
+                        return;
+                    }
+                    grid.innerHTML = list.map((p, idx) => window.renderProductCard(p, idx)).join('');
+                } else {
+                    showError(grid, loadFeaturedProducts);
+                }
+            } catch (e) {
+                showError(grid, loadFeaturedProducts);
+            }
+        }
+
+        async function loadNewArrivals() {
+            const grid = document.getElementById('newArrivalsGrid');
+            try {
+                const res = await window.apiClient.get('/products/new_arrivals/');
+                if (res.ok) {
+                    const products = await res.json();
+                    const list = products.results || products;
+                    if (list.length === 0) {
+                        grid.innerHTML = '<div class="state-box" style="grid-column: 1/-1;"><p>No new arrivals at this time.</p></div>';
+                        return;
+                    }
+                    grid.innerHTML = list.map((p, idx) => window.renderProductCard(p, idx + 4)).join('');
+                } else {
+                    showError(grid, loadNewArrivals);
+                }
+            } catch (e) {
+                showError(grid, loadNewArrivals);
+            }
+        }
+
+        function showError(container, retryFn) {
+            container.innerHTML = `
+                <div class="state-box" style="grid-column: 1/-1;">
+                    <p class="state-title">Unable to load products</p>
+                    <p class="state-description">Please ensure the backend server and database are running.</p>
+                    <button class="btn btn-secondary btn-sm" onclick="(${retryFn.toString()})()">Retry</button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

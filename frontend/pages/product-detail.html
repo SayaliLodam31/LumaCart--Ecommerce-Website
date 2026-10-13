@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | LumaCart</title>
+    <meta name="description" content="View product specifications, available sizes, colours, inventory status, and verified reviews at LumaCart.">
+
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+
+    <div id="site-header-mount"></div>
+
+    <main class="container">
+        <!-- Breadcrumb -->
+        <nav style="padding: 1.5rem 0 0.5rem; font-size: 0.82rem; color: var(--color-text-muted);" aria-label="Breadcrumb">
+            <a href="/index.html">Home</a> &nbsp;/&nbsp; 
+            <a href="/pages/products.html">Collections</a> &nbsp;/&nbsp; 
+            <a href="#" id="breadcrumbCategory">Category</a> &nbsp;/&nbsp; 
+            <span id="breadcrumbProduct" style="color: var(--color-text-main);">Product</span>
+        </nav>
+
+        <!-- Product Detail Main View -->
+        <div class="product-detail-layout" id="productDetailLayout">
+            <!-- Left: Image Gallery -->
+            <div class="gallery-container">
+                <div class="gallery-thumbnails" id="galleryThumbnails"></div>
+                <div class="main-image-viewport" id="mainImageViewport">
+                    <img id="mainImage" src="" alt="Product View" class="main-gallery-img" width="384" height="512" fetchpriority="high" decoding="async">
+                </div>
+            </div>
+
+            <!-- Right: Product Info & Actions -->
+            <div class="product-info-column" id="productInfoColumn">
+                <span class="product-detail-brand" id="productBrand">Brand</span>
+                <h1 class="product-detail-title" id="productTitle">Loading product...</h1>
+
+                <!-- Rating & Reviews Count -->
+                <div class="product-rating-row">
+                    <span class="stars-rating" id="productStars">★★★★★</span>
+                    <span id="productRatingNum" style="font-weight: 600;">5.0</span>
+                    <a href="#reviewsSection" class="reviews-link" id="reviewsCountLink">(0 reviews)</a>
+                    <span style="color: var(--color-text-light);">&bull;</span>
+                    <span style="font-size: 0.82rem; color: var(--color-text-muted);">SKU: <strong id="productSku">---</strong></span>
+                </div>
+
+                <!-- Price Box -->
+                <div class="product-detail-price-box">
+                    <span class="detail-current-price" id="detailCurrentPrice">₹0</span>
+                    <span class="detail-original-price" id="detailOriginalPrice" style="display: none;">₹0</span>
+                    <span class="discount-badge" id="detailDiscountBadge" style="display: none;"></span>
+                </div>
+
+                <!-- Description -->
+                <p id="productDescription" style="color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 2rem;">
+                    Loading description...
+                </p>
+
+                <!-- Color Selector -->
+                <div class="variant-selector-group" id="colorSelectorGroup">
+                    <div class="variant-label">
+                        <span>Color: <strong id="selectedColorName">---</strong></span>
+                    </div>
+                    <div class="color-swatches-row" id="colorSwatchesRow"></div>
+                </div>
+
+                <!-- Size Selector -->
+                <div class="variant-selector-group" id="sizeSelectorGroup">
+                    <div class="variant-label">
+                        <span>Size: <strong id="selectedSizeName">---</strong></span>
+                    </div>
+                    <div class="size-pills-row" id="sizePillsRow"></div>
+                </div>
+
+                <!-- Real-time Stock Indicator -->
+                <div class="stock-indicator-badge stock-in" id="stockBadge">
+                    <span class="stock-dot"></span>
+                    <span id="stockStatusText">In Stock</span>
+                </div>
+
+                <!-- Quantity & Actions -->
+                <div class="purchase-action-row">
+                    <div class="quantity-control">
+                        <button class="qty-btn" id="qtyMinusBtn" aria-label="Decrease quantity">&minus;</button>
+                        <input type="text" id="qtyInput" class="qty-input" value="1" readonly>
+                        <button class="qty-btn" id="qtyPlusBtn" aria-label="Increase quantity">+</button>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg" id="addToCartBtn" style="flex: 1;">
+                        Add to Bag &bull; <span id="btnPriceAmount">₹0</span>
+                    </button>
+
+                    <button class="card-wishlist-btn" id="detailWishlistBtn" style="position: static; width: 50px; height: 50px; font-size: 1.3rem;" aria-label="Save to wishlist">
+                        ♡
+                    </button>
+
+                    <button class="nav-icon-btn" id="shareBtn" style="border: 1px solid var(--border-color); width: 50px; height: 50px; font-size: 1.1rem;" title="Share item">
+                        ↗
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Verified Reviews Section -->
+        <section id="reviewsSection" style="margin-top: 5rem; padding-top: 3.5rem; border-top: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+                <div>
+                    <span class="section-badge">VERIFIED CLIENTS</span>
+                    <h2 class="section-title">Client Reviews & Ratings</h2>
+                </div>
+                <button id="openReviewModalBtn" class="btn btn-outline btn-sm">Write a Review</button>
+            </div>
+
+            <div id="reviewsList" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px;">
+                <!-- Populated via API -->
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+            </div>
+        </section>
+
+        <!-- Related Products Section -->
+        <section style="margin: 5rem 0;">
+            <div class="section-header">
+                <span class="section-badge">YOU MAY ALSO ADMIRE</span>
+                <h2 class="section-title">Related Creations</h2>
+            </div>
+            <div class="product-grid" id="relatedProductsGrid"></div>
+        </section>
+    </main>
+
+    <!-- Review Modal Dialog -->
+    <div id="reviewModal" class="dropdown-menu" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vw; max-width: 500px; padding: 2.5rem; z-index: 10000; box-shadow: var(--shadow-modal);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.3rem;">Write Verified Review</h3>
+            <button id="closeReviewModalBtn" style="font-size: 1.4rem;">&times;</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 1.5rem;">
+            Only customers who have received this delivered product can post verified reviews.
+        </p>
+        <form id="reviewForm">
+            <div class="form-group">
+                <label class="form-label">Rating</label>
+                <select id="reviewRatingSelect" class="form-select">
+                    <option value="5">★★★★★ (5 Stars - Exceptional)</option>
+                    <option value="4">★★★★☆ (4 Stars - Great)</option>
+                    <option value="3">★★★☆☆ (3 Stars - Average)</option>
+                    <option value="2">★★☆☆☆ (2 Stars - Below expectations)</option>
+                    <option value="1">★☆☆☆☆ (1 Star - Poor)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Review Headline</label>
+                <input type="text" id="reviewTitleInput" class="form-control" placeholder="e.g. Magnificent silk drape and fit" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Detailed Feedback</label>
+                <textarea id="reviewCommentInput" class="form-control" rows="4" placeholder="Describe the texture, quality, and sizing..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="submitReviewBtn">Submit Review</button>
+        </form>
+    </div>
+    <div id="modalBackdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 9999;"></div>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        let currentProduct = null;
+        let selectedVariant = null;
+        let currentQty = 1;
+        let maxAvailableStock = 0;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+
+            if (!slug) {
+                window.location.href = '/pages/products.html';
+                return;
+            }
+
+            await loadProductDetail(slug);
+            setupQuantityControls();
+            setupAddToCart();
+            setupWishlistAndShare();
+            setupReviewModal();
+
+            // Realtime WebSocket stock update listener
+            window.addEventListener('stock:updated', (e) => {
+                if (currentProduct && selectedVariant && e.detail.variant_id === selectedVariant.id) {
+                    maxAvailableStock = e.detail.available_stock;
+                    updateStockDisplay();
+                }
+            });
+        });
+
+        async function loadProductDetail(slug) {
+            try {
+                const res = await window.apiClient.get(`/products/${slug}/`);
+                if (!res.ok) {
+                    document.getElementById('productDetailLayout').innerHTML = `
+                        <div class="state-box" style="grid-column: 1/-1;">
+                            <h3 class="state-title">Product Not Found</h3>
+                            <p class="state-description">This item may no longer be available in our atelier catalog.</p>
+                            <a href="/pages/products.html" class="btn btn-primary btn-sm">Browse Catalog</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                currentProduct = await res.json();
+                renderProductDetails();
+                loadReviews(currentProduct.id);
+            } catch (e) {
+                console.error('Error loading product:', e);
+            }
+        }
+
+        function renderProductDetails() {
+            const p = currentProduct;
+            document.title = `${p.title} | LumaCart`;
+
+            // Breadcrumb
+            document.getElementById('breadcrumbCategory').textContent = p.category_name;
+            document.getElementById('breadcrumbCategory').href = `/pages/products.html?category=${p.category_slug}`;
+            document.getElementById('breadcrumbProduct').textContent = p.title;
+
+            // Brand & Title
+            document.getElementById('productBrand').textContent = p.brand_name || 'Luma Luxe';
+            document.getElementById('productTitle').textContent = p.title;
+            document.getElementById('productDescription').textContent = p.description;
+
+            // Price
+            document.getElementById('detailCurrentPrice').textContent = window.CONFIG.formatCurrency(p.current_price);
+            document.getElementById('btnPriceAmount').textContent = window.CONFIG.formatCurrency(p.current_price);
+            if (p.discount_price && parseFloat(p.discount_price) > 0 && parseFloat(p.discount_price) < parseFloat(p.base_price)) {
+                const orig = document.getElementById('detailOriginalPrice');
+                orig.textContent = window.CONFIG.formatCurrency(p.base_price);
+                orig.style.display = 'inline';
+
+                const disc = document.getElementById('detailDiscountBadge');
+                const percent = Math.round(((parseFloat(p.base_price) - parseFloat(p.discount_price)) / parseFloat(p.base_price)) * 100);
+                disc.textContent = `Save ${percent}%`;
+                disc.style.display = 'inline';
+            }
+
+            // Gallery
+            renderGallery(p.images);
+
+            // Variants Setup (Colors & Sizes)
+            setupVariants(p.variants);
+
+            // Related Products
+            if (p.related_products && p.related_products.length) {
+                document.getElementById('relatedProductsGrid').innerHTML = p.related_products.map((rp, idx) => window.renderProductCard(rp, idx + 4)).join('');
+            }
+        }
+
+        function renderGallery(images) {
+            const thumbs = document.getElementById('galleryThumbnails');
+            const mainImg = document.getElementById('mainImage');
+
+            const allImages = (images && images.length) ? images : [
+                { image_url: currentProduct.primary_image || '/assets/images/placeholder.svg' }
+            ];
+
+            mainImg.src = allImages[0].image_url;
+            mainImg.onerror = function() { this.onerror = null; this.src = '/assets/images/placeholder.svg'; };
+
+            thumbs.innerHTML = allImages.map((img, i) => `
+                <button class="thumbnail-btn ${i === 0 ? 'active' : ''}" onclick="selectGalleryImage(this, '${img.image_url}')">
+                    <img src="${img.image_url}" alt="Thumbnail ${i+1}" width="72" height="96" loading="lazy" decoding="async">
+                </button>
+            `).join('');
+
+            // Zoom effect on hover
+            const viewport = document.getElementById('mainImageViewport');
+            viewport.addEventListener('mousemove', (e) => {
+                const rect = viewport.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                mainImg.style.transformOrigin = `${x}% ${y}%`;
+                mainImg.style.transform = 'scale(1.5)';
+            });
+            viewport.addEventListener('mouseleave', () => {
+                mainImg.style.transform = 'scale(1)';
+            });
+        }
+
+        window.selectGalleryImage = function(btn, url) {
+            document.querySelectorAll('.thumbnail-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('mainImage').src = url;
+        };
+
+        function setupVariants(variants) {
+            if (!variants || !variants.length) return;
+
+            // Pick first variant with stock, or just first
+            selectedVariant = variants.find(v => v.stock > 0) || variants[0];
+
+            // Render Colors
+            const uniqueColors = [];
+            const colorIds = new Set();
+            variants.forEach(v => {
+                if (v.colour && !colorIds.has(v.colour)) {
+                    colorIds.add(v.colour);
+                    uniqueColors.push({ id: v.colour, name: v.colour_name, hex: v.colour_hex });
+                }
+            });
+
+            const colorContainer = document.getElementById('colorSwatchesRow');
+            if (uniqueColors.length > 0) {
+                colorContainer.innerHTML = uniqueColors.map(c => `
+                    <button class="color-swatch-btn ${selectedVariant.colour === c.id ? 'active' : ''}" 
+                            style="background-color: ${c.hex};" 
+                            title="${c.name}" 
+                            onclick="onColorSelected(${c.id}, '${c.name}')"></button>
+                `).join('');
+                document.getElementById('selectedColorName').textContent = selectedVariant.colour_name || 'Standard';
+            } else {
+                document.getElementById('colorSelectorGroup').style.display = 'none';
+            }
+
+            // Render Sizes
+            renderSizesForCurrentColor();
+            updateSelectedVariantDisplay();
+        }
+
+        function renderSizesForCurrentColor() {
+            const sizeContainer = document.getElementById('sizePillsRow');
+            const matchingVariants = currentProduct.variants.filter(v => 
+                !selectedVariant.colour || v.colour === selectedVariant.colour
+            );
+
+            if (matchingVariants.some(v => v.size_name)) {
+                sizeContainer.innerHTML = matchingVariants.map(v => `
+                    <button class="size-pill-btn ${v.id === selectedVariant.id ? 'active' : ''} ${v.stock === 0 ? 'disabled' : ''}" 
+                            onclick="onVariantSelected(${v.id})" 
+                            ${v.stock === 0 ? 'disabled' : ''}>
+                        ${v.size_name}
+                    </button>
+                `).join('');
+                document.getElementById('selectedSizeName').textContent = selectedVariant.size_name || 'Standard';
+            } else {
+                document.getElementById('sizeSelectorGroup').style.display = 'none';
+            }
+        }
+
+        window.onColorSelected = function(colorId, colorName) {
+            document.getElementById('selectedColorName').textContent = colorName;
+            // Find variant with this color and current size
+            const match = currentProduct.variants.find(v => v.colour === colorId && v.size === selectedVariant.size) 
+                       || currentProduct.variants.find(v => v.colour === colorId);
+            if (match) {
+                selectedVariant = match;
+                renderSizesForCurrentColor();
+                updateSelectedVariantDisplay();
+            }
+        };
+
+        window.onVariantSelected = function(variantId) {
+            const variant = currentProduct.variants.find(v => v.id === variantId);
+            if (variant) {
+                selectedVariant = variant;
+                renderSizesForCurrentColor();
+                updateSelectedVariantDisplay();
+            }
+        };
+
+        function updateSelectedVariantDisplay() {
+            if (!selectedVariant) return;
+
+            document.getElementById('productSku').textContent = selectedVariant.sku;
+            maxAvailableStock = selectedVariant.stock || 0;
+            currentQty = 1;
+            document.getElementById('qtyInput').value = currentQty;
+
+            updateStockDisplay();
+        }
+
+        function updateStockDisplay() {
+            const stockBadge = document.getElementById('stockBadge');
+            const stockText = document.getElementById('stockStatusText');
+            const addBtn = document.getElementById('addToCartBtn');
+
+            stockBadge.classList.remove('stock-in', 'stock-low', 'stock-out');
+
+            if (maxAvailableStock <= 0) {
+                stockBadge.classList.add('stock-out');
+                stockText.textContent = 'Out of Stock';
+                addBtn.disabled = true;
+                addBtn.textContent = 'Sold Out';
+            } else if (maxAvailableStock <= 5) {
+                stockBadge.classList.add('stock-low');
+                stockText.textContent = `Low Stock — Only ${maxAvailableStock} left`;
+                addBtn.disabled = false;
+                addBtn.innerHTML = `Add to Bag &bull; ${window.CONFIG.formatCurrency(selectedVariant.effective_price || currentProduct.current_price)}`;
+            } else {
+                stockBadge.classList.add('stock-in');
+                stockText.textContent = `In Stock (${maxAvailableStock} available)`;
+                addBtn.disabled = false;
+                addBtn.innerHTML = `Add to Bag &bull; ${window.CONFIG.formatCurrency(selectedVariant.effective_price || currentProduct.current_price)}`;
+            }
+        }
+
+        function setupQuantityControls() {
+            document.getElementById('qtyMinusBtn').addEventListener('click', () => {
+                if (currentQty > 1) {
+                    currentQty--;
+                    document.getElementById('qtyInput').value = currentQty;
+                }
+            });
+
+            document.getElementById('qtyPlusBtn').addEventListener('click', () => {
+                if (currentQty < maxAvailableStock) {
+                    currentQty++;
+                    document.getElementById('qtyInput').value = currentQty;
+                } else {
+                    window.Toast.warning(`Maximum available stock is ${maxAvailableStock}`);
+                }
+            });
+        }
+
+        function setupAddToCart() {
+            const btn = document.getElementById('addToCartBtn');
+            btn.addEventListener('click', async () => {
+                if (!selectedVariant) {
+                    window.Toast.warning('Please select a variant.');
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.textContent = 'Adding...';
+
+                const success = await window.cartManager.addToCart(selectedVariant.id, currentQty);
+                btn.disabled = false;
+                updateStockDisplay();
+            });
+        }
+
+        function setupWishlistAndShare() {
+            const wishBtn = document.getElementById('detailWishlistBtn');
+            wishBtn.addEventListener('click', async () => {
+                if (currentProduct) {
+                    const active = await window.wishlistManager.toggle(currentProduct.id, currentProduct.title);
+                    wishBtn.textContent = active ? '♥' : '♡';
+                    wishBtn.style.color = active ? 'var(--color-accent-rose)' : 'inherit';
+                }
+            });
+
+            document.getElementById('shareBtn').addEventListener('click', () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: currentProduct.title,
+                        text: `Discover ${currentProduct.title} at LumaCart`,
+                        url: window.location.href
+                    });
+                } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    window.Toast.info('Product link copied to clipboard!');
+                }
+            });
+        }
+
+        async function loadReviews(productId) {
+            const list = document.getElementById('reviewsList');
+            try {
+                const res = await window.apiClient.get(`/products/${productId}/reviews/`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('productRatingNum').textContent = data.average_rating;
+                    document.getElementById('reviewsCountLink').textContent = `(${data.count} reviews)`;
+
+                    if (data.reviews.length === 0) {
+                        list.innerHTML = `
+                            <p style="color: var(--color-text-muted); font-size: 0.95rem;">
+                                No reviews yet. Be the first verified customer to share your thoughts on this creation.
+                            </p>
+                        `;
+                        return;
+                    }
+
+                    list.innerHTML = data.reviews.map(r => `
+                        <div style="background: #FFFFFF; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); padding: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span class="stars-rating">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span>
+                                <span style="font-size: 0.78rem; color: var(--color-text-muted);">${r.created_at_formatted}</span>
+                            </div>
+                            <h4 style="font-size: 1rem; margin-bottom: 0.4rem;">${r.title}</h4>
+                            <p style="color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem;">${r.comment}</p>
+                            <div style="font-size: 0.78rem; color: var(--color-text-muted);">
+                                <strong>${r.user_name}</strong> &bull; <span class="badge badge-sage">Verified Buyer</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function setupReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const openBtn = document.getElementById('openReviewModalBtn');
+            const closeBtn = document.getElementById('closeReviewModalBtn');
+            const form = document.getElementById('reviewForm');
+
+            openBtn.addEventListener('click', () => {
+                if (!window.authManager.isAuthenticated()) {
+                    window.Toast.info('Please sign in to write a review.');
+                    setTimeout(() => window.location.href = '/pages/login.html', 800);
+                    return;
+                }
+                modal.classList.add('active');
+                backdrop.style.display = 'block';
+            });
+
+            const closeModal = () => {
+                modal.classList.remove('active');
+                backdrop.style.display = 'none';
+            };
+
+            closeBtn.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', closeModal);
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const rating = document.getElementById('reviewRatingSelect').value;
+                const title = document.getElementById('reviewTitleInput').value.trim();
+                const comment = document.getElementById('reviewCommentInput').value.trim();
+
+                const submitBtn = document.getElementById('submitReviewBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+
+                try {
+                    const res = await window.apiClient.post(`/products/${currentProduct.id}/reviews/`, {
+                        rating, title, comment
+                    });
+                    const data = await ApiClient.parseResponse(res);
+
+                    if (res.ok) {
+                        window.Toast.success(data.message || 'Review submitted!');
+                        closeModal();
+                        form.reset();
+                        loadReviews(currentProduct.id);
+                    } else {
+                        window.Toast.error(data.error || 'Failed to submit review.');
+                    }
+                } catch (err) {
+                    window.Toast.error('Network error.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Review';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

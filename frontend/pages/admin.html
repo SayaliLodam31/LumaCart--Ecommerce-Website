@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Admin Dashboard | LumaCart</title>
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body style="background-color: #F8F7F4;">
+
+    <div id="site-header-mount"></div>
+
+    <main class="container" style="padding: 2.5rem 1.5rem 5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <span class="section-badge">MANAGEMENT PORTAL</span>
+                <h1 style="font-size: 2.2rem;">Atelier Operations Dashboard</h1>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="/admin/" target="_blank" class="btn btn-secondary btn-sm">Django Native Admin ↗</a>
+                <button id="exportCsvBtn" class="btn btn-outline btn-sm">📥 Export Orders CSV</button>
+            </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="admin-metrics-grid" id="analyticsCards">
+            <div class="metric-card">
+                <div class="metric-label">Total Revenue</div>
+                <div class="metric-value" id="kpiRevenue">₹0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Orders</div>
+                <div class="metric-value" id="kpiOrders">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Low Stock Alerts (&le;5)</div>
+                <div class="metric-value" id="kpiLowStock" style="color: var(--color-warning);">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Storefront Catalog</div>
+                <div class="metric-value" id="kpiProducts">12 Items</div>
+            </div>
+        </div>
+
+        <!-- Management Sections: Orders & Stock -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2.5rem;">
+            <!-- Orders Management -->
+            <div class="checkout-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="font-size: 1.3rem;">Recent Customer Orders</h2>
+                    <span style="font-size: 0.85rem; color: var(--color-text-muted);">Real-time status changes notify customers</span>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="cart-table" id="adminOrdersTable">
+                        <thead>
+                            <tr>
+                                <th>Order Ref</th>
+                                <th>Date</th>
+                                <th>Client Email</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Current Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersBody">
+                            <tr><td colspan="7" style="text-align: center;">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Inventory Live Editor -->
+            <div class="checkout-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h2 style="font-size: 1.3rem;">Live Stock & SKU Inventory</h2>
+                        <p style="font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.2rem;">Updating stock here instantly notifies active browsers via WebSockets</p>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="cart-table">
+                        <thead>
+                            <tr>
+                                <th>Product Title</th>
+                                <th>SKU</th>
+                                <th>Variant</th>
+                                <th>Current Stock</th>
+                                <th>New Stock Quantity</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminInventoryBody">
+                            <tr><td colspan="6" style="text-align: center;">Loading inventory items...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.authManager.isAuthenticated()) {
+                window.location.href = `/pages/login.html?redirect=${encodeURIComponent(window.location.pathname)}`;
+                return;
+            }
+
+            if (!window.authManager.isStaff()) {
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 5rem 1rem;">
+                        <h2>Access Restricted</h2>
+                        <p style="color: var(--color-text-muted); margin: 1rem 0;">This portal is reserved for authorized staff only.</p>
+                        <a href="/index.html" class="btn btn-primary btn-sm">Return to Storefront</a>
+                    </div>
+                `;
+                return;
+            }
+
+            await loadAnalytics();
+            await loadAdminOrders();
+            await loadAdminInventory();
+            setupCsvExport();
+        });
+
+        async function loadAnalytics() {
+            try {
+                const res = await window.apiClient.get('/admin/orders/analytics/');
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('kpiRevenue').textContent = window.CONFIG.formatCurrency(data.total_revenue);
+                    document.getElementById('kpiOrders').textContent = data.total_orders;
+                    document.getElementById('kpiLowStock').textContent = data.low_stock_count;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadAdminOrders() {
+            const tbody = document.getElementById('adminOrdersBody');
+            try {
+                const res = await window.apiClient.get('/admin/orders/');
+                if (res.ok) {
+                    const data = await res.json();
+                    const orders = data.results || data;
+
+                    if (orders.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No orders registered yet.</td></tr>';
+                        return;
+                    }
+
+                    const statusOptions = [
+                        'pending_payment', 'confirmed', 'processing',
+                        'shipped', 'delivered', 'cancelled', 'refunded'
+                    ];
+
+                    tbody.innerHTML = orders.map(o => `
+                        <tr>
+                            <td><strong>${o.order_number}</strong></td>
+                            <td style="font-size: 0.8rem; color: var(--color-text-muted);">${o.created_at_formatted}</td>
+                            <td>${o.shipping_address_json.full_name || 'Customer'}</td>
+                            <td>${o.items.length} item(s)</td>
+                            <td><strong>${window.CONFIG.formatCurrency(o.total_amount)}</strong></td>
+                            <td>
+                                <select id="statusSelect_${o.order_number}" class="form-select" style="padding: 0.35rem 0.6rem; font-size: 0.82rem;">
+                                    ${statusOptions.map(st => `
+                                        <option value="${st}" ${st === o.status ? 'selected' : ''}>
+                                            ${st.replace('_', ' ').toUpperCase()}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <button onclick="updateOrderStatus('${o.order_number}')" class="btn btn-secondary btn-sm" style="padding: 0.3rem 0.7rem; font-size: 0.8rem;">
+                                    Save
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.updateOrderStatus = async function(orderNum) {
+            const select = document.getElementById(`statusSelect_${orderNum}`);
+            const newStatus = select.value;
+
+            try {
+                const res = await window.apiClient.post(`/admin/orders/${orderNum}/update_status/`, {
+                    status: newStatus
+                });
+                const data = await ApiClient.parseResponse(res);
+
+                if (res.ok) {
+                    window.Toast.success(`Order #${orderNum} status updated to ${newStatus}.`);
+                    loadAnalytics();
+                } else {
+                    window.Toast.error(data.error || 'Failed to update order status.');
+                }
+            } catch (e) {
+                window.Toast.error('Network error.');
+            }
+        };
+
+        async function loadAdminInventory() {
+            const tbody = document.getElementById('adminInventoryBody');
+            try {
+                const res = await window.apiClient.get('/admin/products/');
+                if (res.ok) {
+                    const data = await res.json();
+                    const products = data.results || data;
+
+                    let rows = '';
+                    products.forEach(p => {
+                        (p.variants || []).forEach(v => {
+                            rows += `
+                                <tr>
+                                    <td><strong>${p.title}</strong></td>
+                                    <td><span style="font-family: monospace; font-size: 0.82rem;">${v.sku}</span></td>
+                                    <td>${v.size_name || 'One Size'} / ${v.colour_name || 'Standard'}</td>
+                                    <td>
+                                        <span class="badge ${v.stock <= 5 ? 'badge-warning' : 'badge-sage'}" data-sku-stock="${v.sku}">
+                                            ${v.stock} in stock
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="stockInput_${v.id}" class="form-control" value="${v.stock}" min="0" style="width: 90px; padding: 0.35rem 0.5rem; font-size: 0.85rem;">
+                                    </td>
+                                    <td>
+                                        <button onclick="updateVariantStock(${p.id}, ${v.id})" class="btn btn-primary btn-sm" style="padding: 0.3rem 0.7rem; font-size: 0.8rem;">
+                                            Update
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    });
+
+                    tbody.innerHTML = rows || '<tr><td colspan="6" style="text-align:center;">No variants found.</td></tr>';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.updateVariantStock = async function(productId, variantId) {
+            const input = document.getElementById(`stockInput_${variantId}`);
+            const newStock = parseInt(input.value);
+
+            if (isNaN(newStock) || newStock < 0) {
+                window.Toast.warning('Please enter a valid non-negative integer.');
+                return;
+            }
+
+            try {
+                const res = await window.apiClient.post(`/admin/products/${productId}/update_stock/`, {
+                    variant_id: variantId,
+                    stock: newStock
+                });
+                const data = await ApiClient.parseResponse(res);
+
+                if (res.ok) {
+                    window.Toast.success('Inventory updated! Realtime WebSocket broadcast dispatched.');
+                    loadAnalytics();
+                } else {
+                    window.Toast.error(data.error || 'Failed to update stock.');
+                }
+            } catch (e) {
+                window.Toast.error('Network error.');
+            }
+        };
+
+        function setupCsvExport() {
+            document.getElementById('exportCsvBtn').addEventListener('click', async () => {
+                const token = window.apiClient.getAccessToken();
+                const url = `${window.CONFIG.API_BASE}/admin/orders/export_csv/`;
+
+                window.Toast.info('Preparing CSV export...');
+                try {
+                    const res = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        const blob = await res.blob();
+                        const downloadUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = `lumacart_orders_${new Date().toISOString().slice(0, 10)}.csv`;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.Toast.success('Orders CSV downloaded.');
+                    } else {
+                        window.Toast.error('Failed to export orders CSV.');
+                    }
+                } catch (e) {
+                    window.Toast.error('Network error during export.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

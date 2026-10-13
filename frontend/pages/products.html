@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collections & Catalog | LumaCart</title>
+    <meta name="description" content="Explore LumaCart's complete luxury collection of contemporary clothing, fine jewellery, shoes, bags, and accessories.">
+
+        <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+
+    <div id="site-header-mount"></div>
+
+    <main class="container">
+        <!-- Breadcrumb -->
+        <nav style="padding: 1.5rem 0 0.5rem; font-size: 0.82rem; color: var(--color-text-muted);" aria-label="Breadcrumb">
+            <a href="/index.html">Home</a> &nbsp;/&nbsp; <span id="breadcrumbCurrent" style="color: var(--color-text-main);">All Collections</span>
+        </nav>
+
+        <div class="catalog-page-layout">
+            <!-- Filter Sidebar -->
+            <aside class="catalog-sidebar" id="filterSidebar">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; font-family: var(--font-body); font-weight: 700;">Filters</h3>
+                    <button id="clearFiltersBtn" class="btn btn-ghost btn-sm" style="font-size: 0.78rem; padding: 0.2rem 0.5rem;">Reset All</button>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="filter-group">
+                    <h4 class="filter-title">Category</h4>
+                    <ul class="filter-options-list" id="categoryFilterList">
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="" checked> All Categories</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="womens-clothing"> Women's Clothing</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="mens-clothing"> Men's Clothing</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="shoes"> Shoes</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="bags"> Bags</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="jewellery"> Jewellery</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="categoryFilter" value="accessories"> Accessories</label></li>
+                    </ul>
+                </div>
+
+                <!-- Gender Filter -->
+                <div class="filter-group">
+                    <h4 class="filter-title">Gender / Line</h4>
+                    <ul class="filter-options-list" id="genderFilterList">
+                        <li><label class="filter-checkbox-label"><input type="radio" name="genderFilter" value="" checked> All</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="genderFilter" value="women"> Women</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="genderFilter" value="men"> Men</label></li>
+                        <li><label class="filter-checkbox-label"><input type="radio" name="genderFilter" value="unisex"> Unisex</label></li>
+                    </ul>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="filter-group">
+                    <h4 class="filter-title">Price Range (₹)</h4>
+                    <div class="price-range-inputs">
+                        <input type="number" id="minPriceInput" class="price-input" placeholder="Min" min="0">
+                        <span style="color: var(--color-text-muted);">&ndash;</span>
+                        <input type="number" id="maxPriceInput" class="price-input" placeholder="Max" min="0">
+                    </div>
+                    <button id="applyPriceBtn" class="btn btn-secondary btn-sm btn-block" style="margin-top: 0.75rem;">Apply Price</button>
+                </div>
+
+                <!-- Stock Availability -->
+                <div class="filter-group">
+                    <h4 class="filter-title">Availability</h4>
+                    <label class="filter-checkbox-label">
+                        <input type="checkbox" id="inStockCheckbox"> In Stock Only
+                    </label>
+                </div>
+            </aside>
+
+            <!-- Main Product Grid and Sorting -->
+            <section>
+                <div class="catalog-top-bar">
+                    <span class="catalog-count" id="catalogResultsCount">Loading items...</span>
+                    
+                    <div class="catalog-sorting">
+                        <label for="catalogSortSelect" style="font-size: 0.85rem; color: var(--color-text-secondary);">Sort By:</label>
+                        <select id="catalogSortSelect" class="sort-select">
+                            <option value="-created_at">Newest First</option>
+                            <option value="price_low_high">Price: Low to High</option>
+                            <option value="price_high_low">Price: High to Low</option>
+                            <option value="popular">Popularity</option>
+                            <option value="rating">Top Rated</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="product-grid" id="catalogGrid">
+                    <div class="skeleton skeleton-card-img"></div>
+                    <div class="skeleton skeleton-card-img"></div>
+                    <div class="skeleton skeleton-card-img"></div>
+                    <div class="skeleton skeleton-card-img"></div>
+                    <div class="skeleton skeleton-card-img"></div>
+                    <div class="skeleton skeleton-card-img"></div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-wrapper" id="paginationWrapper"></div>
+            </section>
+        </div>
+    </main>
+
+    <div id="site-footer-mount"></div>
+    <div id="mobile-bottom-nav-mount"></div>
+
+    <!-- Scripts -->
+    <script src="/js/config.js"></script>
+    <script src="/js/modules/toast.js"></script>
+    <script src="/js/modules/apiClient.js"></script>
+    <script src="/js/modules/auth.js"></script>
+    <script src="/js/modules/cart.js"></script>
+    <script src="/js/modules/wishlist.js"></script>
+    <script src="/js/modules/websocket.js"></script>
+    <script src="/js/modules/ui.js"></script>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFiltersFromUrl();
+            setupFilterListeners();
+            fetchCatalogProducts();
+        });
+
+        function initializeFiltersFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            
+            const cat = params.get('category') || '';
+            const catRadio = document.querySelector(`input[name="categoryFilter"][value="${cat}"]`);
+            if (catRadio) catRadio.checked = true;
+
+            const gender = params.get('gender') || '';
+            const genderRadio = document.querySelector(`input[name="genderFilter"][value="${gender}"]`);
+            if (genderRadio) genderRadio.checked = true;
+
+            const min = params.get('min_price') || '';
+            const max = params.get('max_price') || '';
+            if (min) document.getElementById('minPriceInput').value = min;
+            if (max) document.getElementById('maxPriceInput').value = max;
+
+            const inStock = params.get('in_stock');
+            if (inStock === 'true') document.getElementById('inStockCheckbox').checked = true;
+
+            const sort = params.get('ordering') || '-created_at';
+            document.getElementById('catalogSortSelect').value = sort;
+
+            const page = parseInt(params.get('page')) || 1;
+            currentPage = page;
+
+            // Update breadcrumb
+            const search = params.get('search');
+            if (search) {
+                document.getElementById('breadcrumbCurrent').textContent = `Search: "${search}"`;
+            } else if (cat) {
+                document.getElementById('breadcrumbCurrent').textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+            }
+        }
+
+        function setupFilterListeners() {
+            // Category & Gender filter changes
+            document.querySelectorAll('input[name="categoryFilter"], input[name="genderFilter"]').forEach(input => {
+                input.addEventListener('change', () => {
+                    currentPage = 1;
+                    syncUrlAndFetch();
+                });
+            });
+
+            // In stock filter
+            document.getElementById('inStockCheckbox').addEventListener('change', () => {
+                currentPage = 1;
+                syncUrlAndFetch();
+            });
+
+            // Apply Price Button
+            document.getElementById('applyPriceBtn').addEventListener('click', () => {
+                currentPage = 1;
+                syncUrlAndFetch();
+            });
+
+            // Sorting
+            document.getElementById('catalogSortSelect').addEventListener('change', () => {
+                syncUrlAndFetch();
+            });
+
+            // Reset filters
+            document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+                document.querySelector('input[name="categoryFilter"][value=""]').checked = true;
+                document.querySelector('input[name="genderFilter"][value=""]').checked = true;
+                document.getElementById('minPriceInput').value = '';
+                document.getElementById('maxPriceInput').value = '';
+                document.getElementById('inStockCheckbox').checked = false;
+                currentPage = 1;
+                window.history.pushState({}, '', '/pages/products.html');
+                fetchCatalogProducts();
+            });
+        }
+
+        function syncUrlAndFetch() {
+            const params = new URLSearchParams();
+            
+            const cat = document.querySelector('input[name="categoryFilter"]:checked')?.value;
+            if (cat) params.set('category', cat);
+
+            const gender = document.querySelector('input[name="genderFilter"]:checked')?.value;
+            if (gender) params.set('gender', gender);
+
+            const min = document.getElementById('minPriceInput').value;
+            const max = document.getElementById('maxPriceInput').value;
+            if (min) params.set('min_price', min);
+            if (max) params.set('max_price', max);
+
+            if (document.getElementById('inStockCheckbox').checked) {
+                params.set('in_stock', 'true');
+            }
+
+            const sort = document.getElementById('catalogSortSelect').value;
+            if (sort && sort !== '-created_at') params.set('ordering', sort);
+
+            // Retain search if exists
+            const currentSearch = new URLSearchParams(window.location.search).get('search');
+            if (currentSearch) params.set('search', currentSearch);
+
+            if (currentPage > 1) params.set('page', currentPage);
+
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.pushState({}, '', newUrl);
+
+            fetchCatalogProducts();
+        }
+
+        async function fetchCatalogProducts() {
+            const grid = document.getElementById('catalogGrid');
+            const countLabel = document.getElementById('catalogResultsCount');
+            const pagination = document.getElementById('paginationWrapper');
+
+            grid.innerHTML = `
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+                <div class="skeleton skeleton-card-img"></div>
+            `;
+
+            const queryParams = new URLSearchParams(window.location.search);
+            const paramsObj = Object.fromEntries(queryParams.entries());
+            if (!paramsObj.page) paramsObj.page = currentPage;
+
+            try {
+                const res = await window.apiClient.get('/products/', paramsObj);
+                if (res.ok) {
+                    const data = await res.json();
+                    const results = data.results || data;
+                    const totalCount = data.count !== undefined ? data.count : results.length;
+
+                    countLabel.textContent = `Showing ${results.length} of ${totalCount} items`;
+
+                    if (results.length === 0) {
+                        grid.innerHTML = `
+                            <div class="state-box" style="grid-column: 1/-1;">
+                                <div class="state-icon">🔍</div>
+                                <h3 class="state-title">No products match your criteria</h3>
+                                <p class="state-description">Try adjusting your filters or search terms.</p>
+                                <button class="btn btn-secondary btn-sm" onclick="document.getElementById('clearFiltersBtn').click()">Reset Filters</button>
+                            </div>
+                        `;
+                        pagination.innerHTML = '';
+                        return;
+                    }
+
+                    grid.innerHTML = results.map((p, idx) => window.renderProductCard(p, idx)).join('');
+
+                    // Render pagination
+                    renderPagination(data.count, data.page_size || 12);
+                } else {
+                    grid.innerHTML = '<div class="state-box" style="grid-column: 1/-1;"><p>Error loading catalogue.</p></div>';
+                }
+            } catch (e) {
+                console.error('Fetch catalogue error:', e);
+                grid.innerHTML = '<div class="state-box" style="grid-column: 1/-1;"><p>Network error connecting to API.</p></div>';
+            }
+        }
+
+        function renderPagination(totalCount, pageSize) {
+            const wrapper = document.getElementById('paginationWrapper');
+            totalPages = Math.ceil(totalCount / pageSize);
+            if (totalPages <= 1) {
+                wrapper.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            if (currentPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})">« Prev</button>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            if (currentPage < totalPages) {
+                html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})">Next »</button>`;
+            }
+
+            wrapper.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            syncUrlAndFetch();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
